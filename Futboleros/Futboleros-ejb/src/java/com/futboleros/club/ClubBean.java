@@ -22,12 +22,12 @@ public class ClubBean {
     @PersistenceContext
     private EntityManager em;
     
-    private Club toEntity(ClubDto dto){
+    protected Club toEntity(ClubDto dto){
         Club nuevo = new Club(dto.getId(), dto.getNombre());
         return nuevo;
     }
     
-    private ClubDto toDto(Club ent){
+    protected ClubDto toDto(Club ent){
         ClubDto nuevo = new ClubDto(ent.getId(), ent.getNombre());
         return nuevo;
     }
