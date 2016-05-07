@@ -38,6 +38,13 @@ public class Club implements Serializable {
         this.nombre = nombre;
     }
     
+    public Club(){}
+    
+    public Club(Long id, String nombre){
+        setId(id);
+        setNombre(nombre);
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

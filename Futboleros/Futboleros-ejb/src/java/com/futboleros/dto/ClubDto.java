@@ -30,6 +30,13 @@ public class ClubDto {
         this.nombre = nombre;
     }
     
+    public ClubDto(){}
+    
+    public ClubDto(Long id, String nombre){
+        setId(id);
+        setNombre(nombre);
+    }
+    
     @Override
     public String toString(){
         return "com.futboleros.club.ClubDto[ id=" + id + " ]";
