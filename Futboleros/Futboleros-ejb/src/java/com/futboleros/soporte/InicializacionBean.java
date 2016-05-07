@@ -43,10 +43,17 @@ public class InicializacionBean {
     }
     
     private void cargarClubes(){
-        ClubDto nuevo = new ClubDto(0L, "Danubio");
+        ClubDto nuevo = new ClubDto(0L, "Peñarol");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Nacional");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Danubio");
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Defensor");
         clubBean.agregarClub(nuevo);
+          nuevo = new ClubDto(0L, "Plaza Colonia");
+        clubBean.agregarClub(nuevo);
+        
     }
     
     public InicializacionBean(){
