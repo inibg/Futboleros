@@ -51,6 +51,8 @@ public class InicializacionBean {
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Defensor");
         clubBean.agregarClub(nuevo);
+          nuevo = new ClubDto(0L, "Plaza Colonia");
+        clubBean.agregarClub(nuevo);
         
     }
     
