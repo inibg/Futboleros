@@ -22,14 +22,14 @@ public class UsuarioBean {
     @PersistenceContext
     private EntityManager em;
     
-    private Usuario toEntity(UsuarioDto dto){
+    protected Usuario toEntity(UsuarioDto dto){
         Usuario nuevo = new Usuario(dto.getId(), dto.getNombreCompleto(),
                 dto.getNombreUsuario(), dto.getPassword(), dto.getRol(),
             dto.getEmail());
         return nuevo;
     }
     
-    private UsuarioDto toDto(Usuario ent){
+    protected UsuarioDto toDto(Usuario ent){
         UsuarioDto nuevo = new UsuarioDto(ent.getId(), ent.getNombreCompleto(),
                     ent.getNombreUsuario(), ent.getPassword(), ent.getRol(), 
                 ent.getEmail());

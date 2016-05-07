@@ -35,6 +35,7 @@ public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="UsuarioId")
     private Long id;
     
     @Column(name = "UsuarioNombreCompleto", length = 60)
