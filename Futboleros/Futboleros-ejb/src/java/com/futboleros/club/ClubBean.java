@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
 @LocalBean
 public class ClubBean {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "FutboleroPU")
     private EntityManager em;
     
     private Club toEntity(ClubDto dto){

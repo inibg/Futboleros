@@ -24,7 +24,7 @@ import javax.persistence.PersistenceContext;
 @Startup
 public class InicializacionBean {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "FutboleroPU")
     private EntityManager em;
     
     @EJB

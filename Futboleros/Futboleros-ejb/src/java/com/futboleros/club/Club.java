@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -20,6 +21,7 @@ public class Club implements Serializable {
     @Column(name = "ClubId")
     private Long id;
     @Column(name = "ClubNombre", unique = true)
+    @NotNull
     private String nombre;
 
     public Long getId() {
