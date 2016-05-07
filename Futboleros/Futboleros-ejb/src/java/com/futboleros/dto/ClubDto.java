@@ -39,6 +39,6 @@ public class ClubDto {
     
     @Override
     public String toString(){
-        return "com.futboleros.club.ClubDto[ id=" + id + " ]";
+        return "com.futboleros.dto.ClubDto[ id=" + id + " ]";
     }
 }

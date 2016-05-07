@@ -78,7 +78,7 @@ public class UsuarioDto {
 
     @Override
     public String toString() {
-        return "com.futboleros.usuario.UsuarioDto[ id=" + id + " ]";
+        return "com.futboleros.dto.UsuarioDto[ id=" + id + " ]";
     }
 
 }
