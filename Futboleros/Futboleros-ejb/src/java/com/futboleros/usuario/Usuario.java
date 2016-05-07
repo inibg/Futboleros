@@ -5,14 +5,21 @@
  */
 package com.futboleros.usuario;
 
+import com.futboleros.club.Club;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -53,6 +60,10 @@ public class Usuario implements Serializable {
     @NotNull
     @Email(message = "Dirección de email inválida")
     private String email;
+    
+    @ManyToMany(targetEntity = Club.class)
+    @JoinTable(name = "usuarioclubes")
+    private List<Club> clubesSeguidos;
     
     public Long getId() {
         return id;

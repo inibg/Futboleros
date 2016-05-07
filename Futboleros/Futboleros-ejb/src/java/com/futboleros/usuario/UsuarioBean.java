@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
 @LocalBean
 public class UsuarioBean {
 
-    @PersistenceContext(unitName = "Futboleros-SensiblesPU")
+    @PersistenceContext
     private EntityManager em;
     
     private Usuario toEntity(UsuarioDto dto){
