@@ -48,10 +48,6 @@ public class Usuario implements Serializable {
     @NotNull
     private String nombreUsuario;
     
-    @Column(name = "UsuarioPassword", length = 256)
-    @NotNull
-    private String password;
-    
     @Column(name = "UsuarioRol")
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -88,14 +84,6 @@ public class Usuario implements Serializable {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Rol getRol() {
@@ -142,11 +130,10 @@ public class Usuario implements Serializable {
     public Usuario(){}
     
     public Usuario(Long id, String nombreCompleto, String nombreUsuario,
-            String password, Rol rol, String email){
+            Rol rol, String email){
         setId(id);
         setNombreCompleto(nombreCompleto);
         setNombreUsuario(nombreUsuario);
-        setPassword(password);
         setRol(rol);
         setEmail(email);
     }

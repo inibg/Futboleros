@@ -11,7 +11,6 @@ public class UsuarioDto {
     private Long id;
     private String nombreCompleto;
     private String nombreUsuario;
-    private String password;
     private Rol rol;
     private String email;
     
@@ -55,23 +54,14 @@ public class UsuarioDto {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
     
     public UsuarioDto(){}
     
-    public UsuarioDto(Long id, String nombreCompleto, String nombreUsuario, 
-            String password, Rol rol, String email){
+    public UsuarioDto(Long id, String nombreCompleto, String nombreUsuario,
+            Rol rol, String email){
         setId(id);
         setNombreCompleto(nombreCompleto);
         setNombreUsuario(nombreUsuario);
-        setPassword(password);
         setRol(rol);
         setEmail(email);
     }

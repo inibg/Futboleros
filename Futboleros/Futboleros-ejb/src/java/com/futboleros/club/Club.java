@@ -6,12 +6,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author inibg
  */
+
+@NamedQueries({
+    @NamedQuery(name = "obtenerClubPorNombre", 
+            query = "SELECT c FROM Club c WHERE c.nombre = :nombreclub"),
+    @NamedQuery(name = "obtenerTodosLosClubes", query = "SELECT c FROM Club c")
+})
+
 @Entity
 public class Club implements Serializable {
 

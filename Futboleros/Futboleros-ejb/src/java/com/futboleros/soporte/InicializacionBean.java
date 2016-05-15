@@ -15,6 +15,8 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -34,11 +36,13 @@ public class InicializacionBean {
     @EJB
     ParametroBean parametroBean;
     
+    private static final Logger logger = LogManager.getLogger(InicializacionBean.class);
+    
     @PostConstruct
     public void inicializarDb(){
-       System.out.println("EjecutaInicializar");
-       cargarClubes();
-       cargarParametros();
+        logger.info("EjecutaInicializar");
+        cargarClubes();
+        cargarParametros();
         
     }
     
@@ -51,13 +55,12 @@ public class InicializacionBean {
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Defensor");
         clubBean.agregarClub(nuevo);
-          nuevo = new ClubDto(0L, "Plaza Colonia");
+        nuevo = new ClubDto(0L, "Plaza Colonia");
         clubBean.agregarClub(nuevo);
         
     }
     
     public InicializacionBean(){
-        System.out.println("Constructor");
     }
     
     private void cargarParametros(){

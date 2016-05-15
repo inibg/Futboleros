@@ -24,14 +24,14 @@ public class UsuarioBean {
     
     protected Usuario toEntity(UsuarioDto dto){
         Usuario nuevo = new Usuario(dto.getId(), dto.getNombreCompleto(),
-                dto.getNombreUsuario(), dto.getPassword(), dto.getRol(),
+                dto.getNombreUsuario(), dto.getRol(),
             dto.getEmail());
         return nuevo;
     }
     
     protected UsuarioDto toDto(Usuario ent){
         UsuarioDto nuevo = new UsuarioDto(ent.getId(), ent.getNombreCompleto(),
-                    ent.getNombreUsuario(), ent.getPassword(), ent.getRol(), 
+                    ent.getNombreUsuario(), ent.getRol(), 
                 ent.getEmail());
         return nuevo;
     }
