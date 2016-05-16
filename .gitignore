@@ -4,3 +4,5 @@
 /Futboleros/Futboleros-ejb/build/
 /Futboleros/Futboleros-ejb/dist/
 Futboleros/Futboleros-ejb/src/conf/META-INF/glassfish-resources.xml
+/Futboleros/Futboleros-war/build/
+/Futboleros/Futboleros-war/dist/

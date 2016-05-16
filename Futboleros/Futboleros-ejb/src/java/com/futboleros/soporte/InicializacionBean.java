@@ -41,9 +41,13 @@ public class InicializacionBean {
     @PostConstruct
     public void inicializarDb(){
         logger.info("EjecutaInicializar");
-        cargarClubes();
-        cargarParametros();
-        
+      //  cargarClubes();
+      //  cargarParametros();
+      //  probarLogin();
+    }
+    
+    private void probarLogin(){
+        Login l = new Login();
     }
     
     private void cargarClubes(){
