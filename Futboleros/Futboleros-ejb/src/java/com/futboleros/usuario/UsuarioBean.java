@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.futboleros.usuario;
 
 import com.futboleros.dto.UsuarioDto;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
@@ -36,8 +32,20 @@ public class UsuarioBean {
         return nuevo;
     }
     
-    private void agregarUsuario(UsuarioDto usuario){
+    private Long agregarUsuario(UsuarioDto usuario){
         Usuario nuevoUsuario = toEntity(usuario);
         em.persist(nuevoUsuario);
+        return nuevoUsuario.getId();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<UsuarioDto> obtenerTodosLosUsuarios(){
+        List<UsuarioDto> usuarios = null;
+        try{
+           usuarios  = (List<UsuarioDto>) em.createNamedQuery("obtenerTodosLosUsuarios").getResultList();
+        }catch(Exception e){
+            System.out.println("Excepcion al obtener todos los usuarios " + e.getMessage());
+        }
+        return usuarios;
     }
 }

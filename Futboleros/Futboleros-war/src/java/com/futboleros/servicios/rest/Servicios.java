@@ -7,6 +7,9 @@ package com.futboleros.servicios.rest;
 
 import com.futboleros.club.ClubBean;
 import com.futboleros.dto.ClubDto;
+import com.futboleros.dto.UsuarioDto;
+import com.futboleros.soporte.Login;
+import com.futboleros.usuario.UsuarioBean;
 import com.google.gson.Gson;
 import com.google.gson.stream.MalformedJsonException;
 import javax.ejb.EJB;
@@ -39,6 +42,8 @@ public class Servicios {
     private UriInfo context;
     @EJB
     private ClubBean cb;
+    @EJB
+    private UsuarioBean ub;
     
 
 // <editor-fold defaultstate="collapsed" desc=" Clubes ">    
@@ -96,4 +101,27 @@ public class Servicios {
     }
     //</editor-fold>
     
+// <editor-fold defaultstate="collapsed" desc=" Usuarios ">
+    @GET
+    @Path("/Usuarios")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response ObtenerUsuarios(){
+        logger.info("Invocado el servicio /Usuarios");
+        List<UsuarioDto> usuarios  = ub.obtenerTodosLosUsuarios();
+        Gson gson = new Gson();
+        String jsonRespuesta = gson.toJson(usuarios);
+        logger.info("La respuesta generada fue: " + jsonRespuesta);
+        return Response.ok(jsonRespuesta).build();
+    }
+    
+    @GET
+    @Path("/Usuarios/LoginTwitter")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response LoginTwitter(){
+        //meter try catch
+        Login l = new Login();
+        
+        return Response.ok(l.getAuthUrl()).build();
+    }
+// </editor-fold>
 }

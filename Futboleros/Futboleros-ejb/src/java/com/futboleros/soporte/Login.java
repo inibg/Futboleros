@@ -15,6 +15,12 @@ public class Login {
     
     private static final Logger logger = LogManager.getLogger(Login.class);
  
+    private String authUrl;
+    
+    public String getAuthUrl() {
+        return authUrl;
+    }
+    
     public Login() {
          final OAuth10aService service = new ServiceBuilder()
                 .apiKey("e6jUHpukx8vA88NTh4bgvJCXl")
@@ -29,8 +35,10 @@ public class Login {
         
         
         logger.info("Now go and authorize Futboleros2016 here:");
-        String authUrl = service.getAuthorizationUrl(requestToken);
+        authUrl = service.getAuthorizationUrl(requestToken);
         logger.info("La url de autorizacion es: " + authUrl);
         
     }
+
+    
 }

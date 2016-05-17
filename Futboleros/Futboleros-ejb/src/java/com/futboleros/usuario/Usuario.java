@@ -1,27 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.futboleros.usuario;
 
 import com.futboleros.club.Club;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 
@@ -29,6 +22,13 @@ import org.hibernate.validator.constraints.Email;
  *
  * @author inibg
  */
+@NamedQueries({
+    @NamedQuery(name = "obtenerUsuarioPorNombre", 
+            query = "SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsuario"),
+    @NamedQuery(name = "obtenerTodosLosUsuarios", query = "SELECT u FROM Usuario u"
+            + " order by u.nombreUsuario")
+})
+
 @Entity
 public class Usuario implements Serializable {
 
