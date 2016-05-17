@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "obtenerClubPorNombre", 
             query = "SELECT c FROM Club c WHERE c.nombre = :nombreclub"),
-    @NamedQuery(name = "obtenerTodosLosClubes", query = "SELECT c FROM Club c")
+    @NamedQuery(name = "obtenerTodosLosClubes", query = "SELECT c FROM Club c"
+            + " order by c.nombre")
 })
 
 @Entity

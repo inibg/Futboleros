@@ -38,10 +38,11 @@ public class ClubBean {
         return nuevo;
     }
     
-    public void agregarClub(ClubDto club){
+    public Long agregarClub(ClubDto club){
      //   logger.info("intentando guardar el club " + club.getNombre());
         Club nuevoClub = toEntity(club);
         em.persist(nuevoClub);
+        return nuevoClub.getId();
     }
     
     public ClubDto obtenerClubPorNombre(String nombre){

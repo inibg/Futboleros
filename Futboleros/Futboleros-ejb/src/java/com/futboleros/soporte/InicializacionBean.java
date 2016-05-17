@@ -41,7 +41,7 @@ public class InicializacionBean {
     @PostConstruct
     public void inicializarDb(){
         logger.info("EjecutaInicializar");
-      //  cargarClubes();
+        cargarClubes();
       //  cargarParametros();
       //  probarLogin();
     }
@@ -61,7 +61,10 @@ public class InicializacionBean {
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Plaza Colonia");
         clubBean.agregarClub(nuevo);
-        
+        nuevo = new ClubDto(0L, "Rentistas");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "River Plate");
+        clubBean.agregarClub(nuevo);
     }
     
     public InicializacionBean(){
