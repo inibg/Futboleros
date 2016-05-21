@@ -43,8 +43,8 @@ public class Usuario implements Serializable {
     @NotNull
     private String nombreCompleto;
     
-    @Column(name = "UsuarioNombreUsuario", length = 20, unique = true)
-    @Size(min = 5, max = 20)
+    @Column(name = "UsuarioNombreUsuario", length = 40, unique = true)
+    @Size(min = 2)
     @NotNull
     private String nombreUsuario;
     

@@ -50,7 +50,7 @@ public class TwitterAuthentication {
         return respuesta;
     }
     
-    public void obtenerAcceso(String verifier, String request, String requestSecret) throws Exception{
+    public String obtenerAcceso(String verifier, String request, String requestSecret) throws Exception{
         logger.info("Obteniendo token de acceso!");
         oauthVerifier = verifier;
         final OAuth10aService service = new ServiceBuilder()
@@ -62,6 +62,8 @@ public class TwitterAuthentication {
             OAuth1AccessToken  accessToken = service.getAccessToken(oldRequest, oauthVerifier);
             logger.info("Se obtuvo el token de acceso: " + accessToken.getToken());
             logger.info("La respuesta raw es: " + accessToken.getRawResponse());
+            return accessToken.getToken();
+         
         }catch(Exception e){
             throw e;
         }

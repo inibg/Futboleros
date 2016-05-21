@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.futboleros.servicios.rest;
 
 import com.futboleros.club.ClubBean;
 import com.futboleros.dto.ClubDto;
 import com.futboleros.dto.UsuarioDto;
+import com.futboleros.usuario.Rol;
 import com.futboleros.usuario.TwitterAuthentication;
 import com.futboleros.usuario.UsuarioBean;
 import com.google.gson.Gson;
@@ -73,6 +69,18 @@ public class Servicios {
         return Response.ok(jsonRespuesta).build();
     }
     
+    @GET
+    @Path("/Clubes/Nombre/{nombre}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerClub(@PathParam("nombre") String nombre){
+        logger.info("Invocado el servicio /Clubes/Nombre/{nombre}");
+        ClubDto clubBuscado = cb.obtenerClubPorNombre(nombre);
+        Gson gson = new Gson();
+        String jsonRespuesta = gson.toJson(clubBuscado);
+        logger.info("La respuesta generada fue: " + jsonRespuesta);
+        return Response.ok(jsonRespuesta).build();
+    }
+    
     @POST
     @Path("/Clubes/nuevo")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -117,6 +125,18 @@ public class Servicios {
     }
     
     @GET
+    @Path("/Usuarios/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerUsuario(@PathParam("id") Long id){
+        logger.info("Invocado el servicio /Usuarios/{id}");
+        UsuarioDto usuarioBuscado = ub.obtenerUsuarioPorId(id);
+        Gson gson = new Gson();
+        String jsonRespuesta = gson.toJson(usuarioBuscado);
+        logger.info("La respuesta generada fue: " + jsonRespuesta);
+        return Response.ok(jsonRespuesta).build();
+    }
+    
+    @GET
     @Path("/Usuarios/CrearUsuario")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loginTwitter(){
@@ -145,24 +165,32 @@ public class Servicios {
     public Response confirmarUsuario(String confirmacionJson){
         logger.info("Invocado el servicio /Usuarios/ConfirmarUsuario");
         logger.info("con este json: " + confirmacionJson);
+        String nombreCompleto = parse(confirmacionJson, "NombreCompleto");
+        String nombreUsuario  = parse(confirmacionJson, "NombreUsuario");
+        String email          = parse(confirmacionJson, "Email");
         String token = parse(confirmacionJson, "Token");
         String tokenSecret = parse(confirmacionJson, "TokenSecret");
         String pinAcceso = parse(confirmacionJson, "Pin");
-        logger.info("El token es: " + token);
-        logger.info("El pin es: " + pinAcceso);
-        logger.info("El tokenSecret es: " + tokenSecret);
+
         if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty())
             return Response.ok("{\"exito\":0, \"mensaje\":\"El json recibido no es correcto\"}").build();
         
         TwitterAuthentication ta = new TwitterAuthentication();
+        String accessToken = "";
         try{
-            ta.obtenerAcceso(pinAcceso, token, tokenSecret);
+           accessToken = ta.obtenerAcceso(pinAcceso, token, tokenSecret);
         }catch(Exception ex){
             logger.error(ex.getMessage());
             return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
         }
-        return Response.ok("{\"exito\":1, \"mensaje\":\"Usuario confirmado\"}").build();
-        
+        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, nombreUsuario, Rol.CLIENTE, email);
+        try{
+            Long id = ub.agregarUsuario(nuevoUsuario);
+             return Response.ok("{\"exito\":1, \"mensaje\":\"Usuario creado con id: " + id.toString() + "\"}").build();
+        }catch(Exception ex){
+            logger.error(ex.getMessage());
+            return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
+        }
     }
 // </editor-fold>
     

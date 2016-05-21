@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -26,7 +26,7 @@ public class ClubBean {
     @PersistenceContext
     private EntityManager em;
     
-    //private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(ClubBean.class);
     
     protected Club toEntity(ClubDto dto){
         Club nuevo = new Club(dto.getId(), dto.getNombre());
@@ -39,7 +39,7 @@ public class ClubBean {
     }
     
     public Long agregarClub(ClubDto club){
-     //   logger.info("intentando guardar el club " + club.getNombre());
+        logger.info("intentando guardar el club " + club.getNombre());
         Club nuevoClub = toEntity(club);
         em.persist(nuevoClub);
         return nuevoClub.getId();

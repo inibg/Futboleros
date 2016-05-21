@@ -32,10 +32,14 @@ public class UsuarioBean {
         return nuevo;
     }
     
-    private Long agregarUsuario(UsuarioDto usuario){
-        Usuario nuevoUsuario = toEntity(usuario);
-        em.persist(nuevoUsuario);
-        return nuevoUsuario.getId();
+    public Long agregarUsuario(UsuarioDto usuario) throws Exception{
+        try{
+            Usuario nuevoUsuario = toEntity(usuario);
+            em.persist(nuevoUsuario);
+            return nuevoUsuario.getId();
+        }catch(Exception e){
+            throw e;
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -47,5 +51,16 @@ public class UsuarioBean {
             System.out.println("Excepcion al obtener todos los usuarios " + e.getMessage());
         }
         return usuarios;
+    }
+    
+    public UsuarioDto obtenerUsuarioPorId(Long id){
+        Usuario buscado = em.find(Usuario.class, id);
+        return toDto(buscado);
+    }
+    
+    public UsuarioDto obtenerUsuarioPorNombre(String nombre){
+        Usuario buscado = em.createNamedQuery("obtenerUsuarioPorNombre",
+                Usuario.class).setParameter("nombreUsuario", nombre).getSingleResult();
+        return toDto(buscado);
     }
 }
