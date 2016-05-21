@@ -137,6 +137,24 @@ public class Servicios {
     }
     
     @GET
+    @Path("/Usuarios/NombreUsuario/{Nombre}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerUsuario(@PathParam("Nombre") String nombre){
+        logger.info("Invocado el servicio /Usuarios/NombreUsuario/{Nombre}");
+        try{
+            UsuarioDto usuarioBuscado = ub.obtenerUsuarioPorNombre(nombre);
+            Gson gson = new Gson();
+            String jsonRespuesta = gson.toJson(usuarioBuscado);
+            logger.info("La respuesta generada fue: " + jsonRespuesta);
+            return Response.ok(jsonRespuesta).build();
+        }catch(Exception e){
+            //Usuario no encontrado
+            return Response.ok("{}").build();
+        }
+        
+    }
+    
+    @GET
     @Path("/Usuarios/CrearUsuario")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loginTwitter(){

@@ -58,9 +58,13 @@ public class UsuarioBean {
         return toDto(buscado);
     }
     
-    public UsuarioDto obtenerUsuarioPorNombre(String nombre){
-        Usuario buscado = em.createNamedQuery("obtenerUsuarioPorNombre",
-                Usuario.class).setParameter("nombreUsuario", nombre).getSingleResult();
-        return toDto(buscado);
+    public UsuarioDto obtenerUsuarioPorNombre(String nombre) throws Exception{
+        try{
+            Usuario buscado = em.createNamedQuery("obtenerUsuarioPorNombre",
+                    Usuario.class).setParameter("nombreUsuario", nombre).getSingleResult();
+            return toDto(buscado);
+        }catch(Exception e){
+            throw e;
+        }
     }
 }
