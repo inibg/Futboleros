@@ -8,10 +8,13 @@ package com.futboleros.servicios.rest;
 import com.futboleros.club.ClubBean;
 import com.futboleros.dto.ClubDto;
 import com.futboleros.dto.UsuarioDto;
-import com.futboleros.soporte.Login;
+import com.futboleros.usuario.TwitterAuthentication;
 import com.futboleros.usuario.UsuarioBean;
 import com.google.gson.Gson;
-import com.google.gson.stream.MalformedJsonException;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
 import javax.ws.rs.GET;
@@ -20,13 +23,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.ws.rs.core.Response;
 /**
  *
  * @author inibg
@@ -50,7 +52,7 @@ public class Servicios {
     @GET
     @Path("/Clubes")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response ObtenerClubes(){
+    public Response obtenerClubes(){
         logger.info("Invocado el servicio /Clubes");
         List<ClubDto> clubes = cb.obtenerTodosLosClubes();
         Gson gson = new Gson();
@@ -62,7 +64,7 @@ public class Servicios {
     @GET
     @Path("/Clubes/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response ObtenerClub(@PathParam("id") Long id){
+    public Response obtenerClub(@PathParam("id") Long id){
         logger.info("Invocado el servicio /Clubes/{id}");
         ClubDto clubBuscado = cb.obtenerClubPorId(id);
         Gson gson = new Gson();
@@ -105,7 +107,7 @@ public class Servicios {
     @GET
     @Path("/Usuarios")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response ObtenerUsuarios(){
+    public Response obtenerUsuarios(){
         logger.info("Invocado el servicio /Usuarios");
         List<UsuarioDto> usuarios  = ub.obtenerTodosLosUsuarios();
         Gson gson = new Gson();
@@ -115,13 +117,59 @@ public class Servicios {
     }
     
     @GET
-    @Path("/Usuarios/LoginTwitter")
+    @Path("/Usuarios/CrearUsuario")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response LoginTwitter(){
-        //meter try catch
-        Login l = new Login();
+    public Response loginTwitter(){
+        logger.info("Invocado el servicio /Usuarios/CrearUsuario");
+        TwitterAuthentication ta = new TwitterAuthentication();
+        List<String> autenticacion = null;
+        try {
+            autenticacion = ta.autenticar();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        }
+        if (autenticacion == null || autenticacion.size() < 3){
+            return Response.ok("El usuario no ha podido ser creado").build();
+        }
+        String respuesta = "Por favor, entre a la " + autenticacion.get(0);
+        respuesta = respuesta + " y autorice a la aplicación\n";
+        respuesta = respuesta + "Su token es: " + autenticacion.get(1) + "\n";
+        respuesta = respuesta + "El token secret es: " + autenticacion.get(2);
+        return Response.ok(respuesta).build();
+    }
+    
+    @POST
+    @Path("/Usuarios/ConfirmarUsuario")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response confirmarUsuario(String confirmacionJson){
+        logger.info("Invocado el servicio /Usuarios/ConfirmarUsuario");
+        logger.info("con este json: " + confirmacionJson);
+        String token = parse(confirmacionJson, "Token");
+        String tokenSecret = parse(confirmacionJson, "TokenSecret");
+        String pinAcceso = parse(confirmacionJson, "Pin");
+        logger.info("El token es: " + token);
+        logger.info("El pin es: " + pinAcceso);
+        logger.info("El tokenSecret es: " + tokenSecret);
+        if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty())
+            return Response.ok("{\"exito\":0, \"mensaje\":\"El json recibido no es correcto\"}").build();
         
-        return Response.ok(l.getAuthUrl()).build();
+        TwitterAuthentication ta = new TwitterAuthentication();
+        try{
+            ta.obtenerAcceso(pinAcceso, token, tokenSecret);
+        }catch(Exception ex){
+            logger.error(ex.getMessage());
+            return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
+        }
+        return Response.ok("{\"exito\":1, \"mensaje\":\"Usuario confirmado\"}").build();
+        
     }
 // </editor-fold>
+    
+    public String parse(String json, String elemento)  {
+        JsonParser  parser = new JsonParser();
+        JsonObject rootObj = parser.parse(json).getAsJsonObject();
+        JsonElement element  = rootObj.get(elemento);
+        return element.getAsString();
+    }
 }

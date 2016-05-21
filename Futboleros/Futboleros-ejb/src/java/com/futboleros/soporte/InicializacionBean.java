@@ -43,12 +43,8 @@ public class InicializacionBean {
         logger.info("EjecutaInicializar");
         cargarClubes();
       //  cargarParametros();
-      //  probarLogin();
     }
     
-    private void probarLogin(){
-        Login l = new Login();
-    }
     
     private void cargarClubes(){
         ClubDto nuevo = new ClubDto(0L, "Peñarol");
