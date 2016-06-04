@@ -2,6 +2,7 @@ package com.futboleros.servicios.rest;
 
 import com.futboleros.club.ClubBean;
 import com.futboleros.dto.ClubDto;
+import com.futboleros.dto.SesionDto;
 import com.futboleros.dto.UsuarioDto;
 import com.futboleros.usuario.Rol;
 import com.futboleros.usuario.SesionBean;
@@ -11,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
@@ -138,11 +140,25 @@ public class Servicios {
         return Response.ok(jsonRespuesta).build();
     }
     
-    @GET
+    @POST
     @Path("/Usuarios/NombreUsuario/{Nombre}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerUsuario(@PathParam("Nombre") String nombre){
+    public Response obtenerUsuario(String json, @PathParam("Nombre") String nombre){
         logger.info("Invocado el servicio /Usuarios/NombreUsuario/{Nombre}");
+        String token = parse(json, "AccessToken");
+        if (token.isEmpty()){
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
         try{
             UsuarioDto usuarioBuscado = ub.obtenerUsuarioPorNombre(nombre);
             Gson gson = new Gson();
@@ -191,15 +207,12 @@ public class Servicios {
         String token = parse(confirmacionJson, "Token");
         String tokenSecret = parse(confirmacionJson, "TokenSecret");
         String pinAcceso = parse(confirmacionJson, "Pin");
-
         if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty()){
             logger.error("El json recibio no es correcto");
             MensajeResponse mr = new MensajeResponse(false, "El json recibido no es correcto");
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
         }
-            
-        
         TwitterAuthentication ta = new TwitterAuthentication();
         String accessToken = "";
         try{
@@ -213,6 +226,13 @@ public class Servicios {
         UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, nombreUsuario, Rol.CLIENTE, email);
         try{
             Long id = ub.agregarUsuario(nuevoUsuario);
+            if (id > 0){
+                nuevoUsuario.setId(id);
+                //Si se creo el usuario le inicio una sesion
+                Date fechaInicio = new Date();
+                SesionDto sesion = new SesionDto(0L, accessToken, nuevoUsuario, fechaInicio);
+                sb.iniciarSesion(sesion);
+            }
             String mensajeRespuesta = "\"mensaje\":\"Usuario creado con id: " + id.toString() + "\n";
             mensajeRespuesta = mensajeRespuesta.concat(", su accessToken es: ");
             mensajeRespuesta = mensajeRespuesta.concat(accessToken + "\"}");
@@ -239,6 +259,13 @@ public class Servicios {
         JsonParser  parser = new JsonParser();
         JsonObject rootObj = parser.parse(json).getAsJsonObject();
         JsonElement element  = rootObj.get(elemento);
-        return element.getAsString();
+        if (element != null)
+            return element.getAsString();
+        else
+            return "";
+    }
+    
+    public boolean validarToken(String accessToken){
+        return sb.sesionValida(accessToken);
     }
 }
