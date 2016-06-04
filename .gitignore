@@ -7,3 +7,6 @@ Futboleros/Futboleros-ejb/src/conf/META-INF/glassfish-resources.xml
 /Futboleros/Futboleros-war/build/
 /Futboleros/Futboleros-war/dist/
 /Futboleros/build/
+Futboleros/nbproject/project.properties
+*.properties
+Futboleros/Futboleros-ejb/nbproject/project.properties

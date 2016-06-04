@@ -4,6 +4,7 @@ import com.futboleros.club.ClubBean;
 import com.futboleros.dto.ClubDto;
 import com.futboleros.dto.UsuarioDto;
 import com.futboleros.usuario.Rol;
+import com.futboleros.usuario.SesionBean;
 import com.futboleros.usuario.TwitterAuthentication;
 import com.futboleros.usuario.UsuarioBean;
 import com.google.gson.Gson;
@@ -42,7 +43,8 @@ public class Servicios {
     private ClubBean cb;
     @EJB
     private UsuarioBean ub;
-    
+    @EJB
+    private SesionBean sb;
 
 // <editor-fold defaultstate="collapsed" desc=" Clubes ">    
     @GET
@@ -190,8 +192,13 @@ public class Servicios {
         String tokenSecret = parse(confirmacionJson, "TokenSecret");
         String pinAcceso = parse(confirmacionJson, "Pin");
 
-        if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty())
-            return Response.ok("{\"exito\":0, \"mensaje\":\"El json recibido no es correcto\"}").build();
+        if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty()){
+            logger.error("El json recibio no es correcto");
+            MensajeResponse mr = new MensajeResponse(false, "El json recibido no es correcto");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+            
         
         TwitterAuthentication ta = new TwitterAuthentication();
         String accessToken = "";
@@ -199,17 +206,33 @@ public class Servicios {
            accessToken = ta.obtenerAcceso(pinAcceso, token, tokenSecret);
         }catch(Exception ex){
             logger.error(ex.getMessage());
-            return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
         }
         UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, nombreUsuario, Rol.CLIENTE, email);
         try{
             Long id = ub.agregarUsuario(nuevoUsuario);
-             return Response.ok("{\"exito\":1, \"mensaje\":\"Usuario creado con id: " + id.toString() + "\"}").build();
+            String mensajeRespuesta = "\"mensaje\":\"Usuario creado con id: " + id.toString() + "\n";
+            mensajeRespuesta = mensajeRespuesta.concat(", su accessToken es: ");
+            mensajeRespuesta = mensajeRespuesta.concat(accessToken + "\"}");
+            MensajeResponse mr = new MensajeResponse(true, mensajeRespuesta);
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
         }catch(Exception ex){
             logger.error(ex.getMessage());
-            return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
         }
     }
+//    
+//    @POST
+//    @Path("/Usuarios/IniciarSesion")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response iniciarSesion(String ){
+//        
+//    }
 // </editor-fold>
     
     public String parse(String json, String elemento)  {
