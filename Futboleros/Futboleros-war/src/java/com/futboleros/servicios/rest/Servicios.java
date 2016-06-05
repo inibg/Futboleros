@@ -191,7 +191,7 @@ public class Servicios {
     }
     
     @GET
-    @Path("/Usuarios/CrearUsuario")
+    @Path("/Usuarios/SolicitudTwitter")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loginTwitter(){
         logger.info("Invocado el servicio /Usuarios/CrearUsuario");
@@ -220,7 +220,6 @@ public class Servicios {
         logger.info("Invocado el servicio /Usuarios/ConfirmarUsuario");
         logger.info("con este json: " + confirmacionJson);
         String nombreCompleto = parse(confirmacionJson, "NombreCompleto");
-        String nombreUsuario  = parse(confirmacionJson, "NombreUsuario");
         String email          = parse(confirmacionJson, "Email");
         String token = parse(confirmacionJson, "Token");
         String tokenSecret = parse(confirmacionJson, "TokenSecret");
@@ -232,16 +231,26 @@ public class Servicios {
             return Response.ok(gson.toJson(mr)).build();
         }
         TwitterAuthentication ta = new TwitterAuthentication();
-        String accessToken = "";
+        String accessToken = null, userName = null;
         try{
-           accessToken = ta.obtenerAcceso(pinAcceso, token, tokenSecret);
+            List<String> datosTwitter = ta.obtenerAcceso(pinAcceso, token, tokenSecret);
+            if (datosTwitter != null && datosTwitter.size() == 2){
+                userName    = datosTwitter.get(0);
+                accessToken = datosTwitter.get(1);
+            }
         }catch(Exception ex){
             logger.error(ex.getMessage());
             MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
         }
-        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, nombreUsuario, Rol.CLIENTE, email);
+        if (userName == null || userName.isEmpty() || accessToken == null || accessToken.isEmpty()){
+            logger.error("El accessToken o el userName están vacios");
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, userName, Rol.CLIENTE, email);
         try{
             Long id = ub.agregarUsuario(nuevoUsuario);
             if (id > 0){
@@ -295,6 +304,13 @@ public class Servicios {
         }
         return Response.ok(mr).build();
     }
+    
+    
+//    @POST
+//    @Path("/Usuarios/IniciarSesion")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+    
     
 // </editor-fold>
     

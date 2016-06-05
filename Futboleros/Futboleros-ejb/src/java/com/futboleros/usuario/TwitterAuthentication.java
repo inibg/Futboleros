@@ -4,6 +4,9 @@ import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Verb;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +53,7 @@ public class TwitterAuthentication {
         return respuesta;
     }
     
-    public String obtenerAcceso(String verifier, String request, String requestSecret) throws Exception{
+    public List<String> obtenerAcceso(String verifier, String request, String requestSecret) throws Exception{
         logger.info("Obteniendo token de acceso!");
         oauthVerifier = verifier;
         final OAuth10aService service = new ServiceBuilder()
@@ -62,7 +65,12 @@ public class TwitterAuthentication {
             OAuth1AccessToken  accessToken = service.getAccessToken(oldRequest, oauthVerifier);
             logger.info("Se obtuvo el token de acceso: " + accessToken.getToken());
             logger.info("La respuesta raw es: " + accessToken.getRawResponse());
-            return accessToken.getToken();
+            String username = accessToken.getParameter("screen_name");
+            logger.info("El usuario de twitter es: " + username);
+            List<String> respuesta = new ArrayList();
+            respuesta.add(username);
+            respuesta.add(accessToken.getToken());
+            return respuesta;
          
         }catch(Exception e){
             throw e;
