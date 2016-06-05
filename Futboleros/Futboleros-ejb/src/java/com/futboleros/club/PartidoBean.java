@@ -13,6 +13,7 @@ import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+
 /**
  *
  * @author inibg
@@ -43,9 +44,13 @@ public class PartidoBean {
         return dto;
     }
     
-    public void agregarPartido(PartidoDto dto){
+    public Partido agregarPartido(PartidoDto dto){
         Partido nuevo = toEntity(dto);
+    
         em.persist(nuevo);
-        
+        return nuevo;
     }
+    
+    
+
 }
