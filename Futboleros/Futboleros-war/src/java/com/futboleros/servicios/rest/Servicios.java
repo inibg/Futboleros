@@ -128,11 +128,27 @@ public class Servicios {
         return Response.ok(jsonRespuesta).build();
     }
     
-    @GET
+    @POST
     @Path("/Usuarios/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerUsuario(@PathParam("id") Long id){
+    public Response obtenerUsuario(String json, @PathParam("id") Long id){
         logger.info("Invocado el servicio /Usuarios/{id}");
+        String token = parse(json, "AccessToken");
+        if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
         UsuarioDto usuarioBuscado = ub.obtenerUsuarioPorId(id);
         Gson gson = new Gson();
         String jsonRespuesta = gson.toJson(usuarioBuscado);
@@ -148,12 +164,14 @@ public class Servicios {
         logger.info("Invocado el servicio /Usuarios/NombreUsuario/{Nombre}");
         String token = parse(json, "AccessToken");
         if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
             MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
         }else{
            if (!validarToken(token))
            {
+                logger.warn("El AccessToken proporcionado no es válido");
                 MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
                 Gson gson = new Gson();
                 return Response.ok(gson.toJson(mr)).build();
@@ -233,9 +251,9 @@ public class Servicios {
                 SesionDto sesion = new SesionDto(0L, accessToken, nuevoUsuario, fechaInicio);
                 sb.iniciarSesion(sesion);
             }
-            String mensajeRespuesta = "\"mensaje\":\"Usuario creado con id: " + id.toString() + "\n";
+            String mensajeRespuesta = "Usuario creado con id: " + id.toString();
             mensajeRespuesta = mensajeRespuesta.concat(", su accessToken es: ");
-            mensajeRespuesta = mensajeRespuesta.concat(accessToken + "\"}");
+            mensajeRespuesta = mensajeRespuesta.concat(accessToken );
             MensajeResponse mr = new MensajeResponse(true, mensajeRespuesta);
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
