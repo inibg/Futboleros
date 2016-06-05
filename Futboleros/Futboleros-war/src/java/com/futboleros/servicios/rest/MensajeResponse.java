@@ -29,4 +29,6 @@ public class MensajeResponse {
         setExito(exito);
         setMensaje(Mensaje);
     }
+    
+    public MensajeResponse(){}
 }

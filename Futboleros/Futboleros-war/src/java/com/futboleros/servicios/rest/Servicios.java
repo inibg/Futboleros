@@ -264,13 +264,38 @@ public class Servicios {
             return Response.ok(gson.toJson(mr)).build();
         }
     }
-//    
-//    @POST
-//    @Path("/Usuarios/IniciarSesion")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response iniciarSesion(String ){
-//        
-//    }
+    
+    @POST
+    @Path("/Usuarios/CerrarSesion")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response cerrarSesion(String json){
+        logger.info("Invocado el servicio /Usuarios/CerrarSesion");
+        String token = parse(json, "AccessToken");
+        if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
+        MensajeResponse mr;
+        if (sb.terminarSesion(token)){
+            mr = new MensajeResponse(true, "Sesion terminada");
+        }else
+        {
+            mr = new MensajeResponse(true, "Ocurrio un problema al cerrar la sesion");
+        }
+        return Response.ok(mr).build();
+    }
+    
 // </editor-fold>
     
     public String parse(String json, String elemento)  {

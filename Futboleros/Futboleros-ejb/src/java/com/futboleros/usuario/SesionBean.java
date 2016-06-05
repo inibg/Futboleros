@@ -59,6 +59,20 @@ public class SesionBean {
         return false;                   
     }
     
+    public boolean terminarSesion(String sesionToken){
+        try{
+            Sesion buscado = em.createNamedQuery("ObtenerSesionPorToken",
+                 Sesion.class).setParameter("sesionToken", sesionToken).getSingleResult();
+            if (buscado != null){
+                em.createNamedQuery("TerminarSesionPorId").setParameter("sesionId", buscado.getId()).executeUpdate();
+                return true;
+            }else{
+                return false;
+            }
+        }catch(Exception e){
+            return false;
+        }
+    }
   
     
 }

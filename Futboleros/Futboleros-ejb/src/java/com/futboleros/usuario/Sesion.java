@@ -27,7 +27,9 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
     @NamedQuery(name = "ObtenerSesionPorToken", 
-            query = "SELECT s FROM Sesion s WHERE s.token = :sesionToken")
+            query = "SELECT s FROM Sesion s WHERE s.token = :sesionToken"),
+    @NamedQuery(name = "TerminarSesionPorId",
+            query = "DELETE FROM Sesion s WHERE s.id = :sesionId")
 })
 @Entity
 public class Sesion implements Serializable {
