@@ -18,14 +18,14 @@ public class UsuarioBean {
     @PersistenceContext
     private EntityManager em;
     
-    protected Usuario toEntity(UsuarioDto dto){
+    public Usuario toEntity(UsuarioDto dto){
         Usuario nuevo = new Usuario(dto.getId(), dto.getNombreCompleto(),
                 dto.getNombreUsuario(), dto.getRol(),
             dto.getEmail());
         return nuevo;
     }
     
-    protected UsuarioDto toDto(Usuario ent){
+    public UsuarioDto toDto(Usuario ent){
         UsuarioDto nuevo = new UsuarioDto(ent.getId(), ent.getNombreCompleto(),
                     ent.getNombreUsuario(), ent.getRol(), 
                 ent.getEmail());

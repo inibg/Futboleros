@@ -4,15 +4,21 @@ import com.futboleros.club.ClubBean;
 import com.futboleros.club.Partido;
 import com.futboleros.club.PartidoBean;
 import com.futboleros.dto.ClubDto;
+
 import com.futboleros.dto.PartidoDto;
+
+import com.futboleros.dto.SesionDto;
+
 import com.futboleros.dto.UsuarioDto;
 import com.futboleros.usuario.Rol;
+import com.futboleros.usuario.SesionBean;
 import com.futboleros.usuario.TwitterAuthentication;
 import com.futboleros.usuario.UsuarioBean;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
@@ -46,8 +52,11 @@ public class Servicios {
     @EJB
     private UsuarioBean ub;
     @EJB
+
     private PartidoBean pb;
-    
+
+    private SesionBean sb;
+
 
 // <editor-fold defaultstate="collapsed" desc=" Clubes ">    
     @GET
@@ -185,11 +194,27 @@ public class Servicios {
         return Response.ok(jsonRespuesta).build();
     }
     
-    @GET
+    @POST
     @Path("/Usuarios/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerUsuario(@PathParam("id") Long id){
+    public Response obtenerUsuario(String json, @PathParam("id") Long id){
         logger.info("Invocado el servicio /Usuarios/{id}");
+        String token = parse(json, "AccessToken");
+        if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
         UsuarioDto usuarioBuscado = ub.obtenerUsuarioPorId(id);
         Gson gson = new Gson();
         String jsonRespuesta = gson.toJson(usuarioBuscado);
@@ -197,11 +222,27 @@ public class Servicios {
         return Response.ok(jsonRespuesta).build();
     }
     
-    @GET
+    @POST
     @Path("/Usuarios/NombreUsuario/{Nombre}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerUsuario(@PathParam("Nombre") String nombre){
+    public Response obtenerUsuario(String json, @PathParam("Nombre") String nombre){
         logger.info("Invocado el servicio /Usuarios/NombreUsuario/{Nombre}");
+        String token = parse(json, "AccessToken");
+        if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
         try{
             UsuarioDto usuarioBuscado = ub.obtenerUsuarioPorNombre(nombre);
             Gson gson = new Gson();
@@ -216,7 +257,7 @@ public class Servicios {
     }
     
     @GET
-    @Path("/Usuarios/CrearUsuario")
+    @Path("/Usuarios/SolicitudTwitter")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loginTwitter(){
         logger.info("Invocado el servicio /Usuarios/CrearUsuario");
@@ -245,32 +286,98 @@ public class Servicios {
         logger.info("Invocado el servicio /Usuarios/ConfirmarUsuario");
         logger.info("con este json: " + confirmacionJson);
         String nombreCompleto = parse(confirmacionJson, "NombreCompleto");
-        String nombreUsuario  = parse(confirmacionJson, "NombreUsuario");
         String email          = parse(confirmacionJson, "Email");
         String token = parse(confirmacionJson, "Token");
         String tokenSecret = parse(confirmacionJson, "TokenSecret");
         String pinAcceso = parse(confirmacionJson, "Pin");
-
-        if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty())
-            return Response.ok("{\"exito\":0, \"mensaje\":\"El json recibido no es correcto\"}").build();
-        
+        if (token.isEmpty() || pinAcceso.isEmpty() || tokenSecret.isEmpty()){
+            logger.error("El json recibio no es correcto");
+            MensajeResponse mr = new MensajeResponse(false, "El json recibido no es correcto");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
         TwitterAuthentication ta = new TwitterAuthentication();
-        String accessToken = "";
+        String accessToken = null, userName = null;
         try{
-           accessToken = ta.obtenerAcceso(pinAcceso, token, tokenSecret);
+            List<String> datosTwitter = ta.obtenerAcceso(pinAcceso, token, tokenSecret);
+            if (datosTwitter != null && datosTwitter.size() == 2){
+                userName    = datosTwitter.get(0);
+                accessToken = datosTwitter.get(1);
+            }
         }catch(Exception ex){
             logger.error(ex.getMessage());
-            return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
         }
-        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, nombreUsuario, Rol.CLIENTE, email);
+        if (userName == null || userName.isEmpty() || accessToken == null || accessToken.isEmpty()){
+            logger.error("El accessToken o el userName están vacios");
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, userName, Rol.CLIENTE, email);
         try{
             Long id = ub.agregarUsuario(nuevoUsuario);
-             return Response.ok("{\"exito\":1, \"mensaje\":\"Usuario creado con id: " + id.toString() + "\"}").build();
+            if (id > 0){
+                nuevoUsuario.setId(id);
+                //Si se creo el usuario le inicio una sesion
+                Date fechaInicio = new Date();
+                SesionDto sesion = new SesionDto(0L, accessToken, nuevoUsuario, fechaInicio);
+                sb.iniciarSesion(sesion);
+            }
+            String mensajeRespuesta = "Usuario creado con id: " + id.toString();
+            mensajeRespuesta = mensajeRespuesta.concat(", su accessToken es: ");
+            mensajeRespuesta = mensajeRespuesta.concat(accessToken );
+            MensajeResponse mr = new MensajeResponse(true, mensajeRespuesta);
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
         }catch(Exception ex){
             logger.error(ex.getMessage());
-            return Response.ok("{\"exito\":0, \"mensaje\":\"Ocurrio un problema al confirmar el usuario\"}").build();
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al confirmar el usuario");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
         }
     }
+    
+    @POST
+    @Path("/Usuarios/CerrarSesion")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response cerrarSesion(String json){
+        logger.info("Invocado el servicio /Usuarios/CerrarSesion");
+        String token = parse(json, "AccessToken");
+        if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
+        MensajeResponse mr;
+        if (sb.terminarSesion(token)){
+            mr = new MensajeResponse(true, "Sesion terminada");
+        }else
+        {
+            mr = new MensajeResponse(true, "Ocurrio un problema al cerrar la sesion");
+        }
+        return Response.ok(mr).build();
+    }
+    
+    
+//    @POST
+//    @Path("/Usuarios/IniciarSesion")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+    
+    
 // </editor-fold>
     
  // <editor-fold defaultstate="collapsed" desc=" Partidos ">
@@ -319,6 +426,13 @@ public class Servicios {
         JsonParser  parser = new JsonParser();
         JsonObject rootObj = parser.parse(json).getAsJsonObject();
         JsonElement element  = rootObj.get(elemento);
-        return element.getAsString();
+        if (element != null)
+            return element.getAsString();
+        else
+            return "";
+    }
+    
+    public boolean validarToken(String accessToken){
+        return sb.sesionValida(accessToken);
     }
 }

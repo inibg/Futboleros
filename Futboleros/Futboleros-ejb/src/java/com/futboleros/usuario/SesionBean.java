@@ -37,11 +37,42 @@ public class SesionBean {
         return nuevo;
     }
     
-      private void agregarSesion(SesionDto sesion){
-        Sesion nuevaSesion = toEntity(sesion);
-        em.persist(nuevaSesion);
+    public void iniciarSesion(SesionDto sesion) throws Exception{
+        try{
+            Sesion nuevaSesion = toEntity(sesion);
+            em.persist(nuevaSesion);
+        }catch(Exception e){
+            throw e;
+        }
     }
     
+    public boolean sesionValida(String sesionToken){
+        try{
+            Sesion buscado = em.createNamedQuery("ObtenerSesionPorToken",
+                 Sesion.class).setParameter("sesionToken", sesionToken).getSingleResult();
+            if (buscado != null){
+                return true;
+            }
+        }catch(Exception e){
+            return false;
+        }
+        return false;                   
+    }
+    
+    public boolean terminarSesion(String sesionToken){
+        try{
+            Sesion buscado = em.createNamedQuery("ObtenerSesionPorToken",
+                 Sesion.class).setParameter("sesionToken", sesionToken).getSingleResult();
+            if (buscado != null){
+                em.createNamedQuery("TerminarSesionPorId").setParameter("sesionId", buscado.getId()).executeUpdate();
+                return true;
+            }else{
+                return false;
+            }
+        }catch(Exception e){
+            return false;
+        }
+    }
   
     
 }

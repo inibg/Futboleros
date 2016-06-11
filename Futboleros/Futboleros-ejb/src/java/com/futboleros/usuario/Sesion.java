@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,6 +25,12 @@ import javax.validation.constraints.NotNull;
  *
  * @author inibg
  */
+@NamedQueries({
+    @NamedQuery(name = "ObtenerSesionPorToken", 
+            query = "SELECT s FROM Sesion s WHERE s.token = :sesionToken"),
+    @NamedQuery(name = "TerminarSesionPorId",
+            query = "DELETE FROM Sesion s WHERE s.id = :sesionId")
+})
 @Entity
 public class Sesion implements Serializable {
 
@@ -32,7 +40,7 @@ public class Sesion implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @Column(name="SesionToken", length=128,unique = true)
+    @Column(name="SesionToken", length=128, unique = true)
     @NotNull
     private String token;
     
