@@ -1,6 +1,7 @@
 package com.futboleros.dto;
 
 import com.futboleros.usuario.Rol;
+import java.util.List;
 
 /**
  *
@@ -13,7 +14,7 @@ public class UsuarioDto {
     private String nombreUsuario;
     private Rol rol;
     private String email;
-    
+    private List<ClubDto> clubesSeguidos;
     
     public Long getId() {
         return id;
@@ -54,16 +55,25 @@ public class UsuarioDto {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public List<ClubDto> getClubesSeguidos() {
+        return clubesSeguidos;
+    }
+
+    public void setClubesSeguidos(List<ClubDto> clubesSeguidos) {
+        this.clubesSeguidos = clubesSeguidos;
+    }
     
     public UsuarioDto(){}
     
     public UsuarioDto(Long id, String nombreCompleto, String nombreUsuario,
-            Rol rol, String email){
+            Rol rol, String email, List<ClubDto> clubes){
         setId(id);
         setNombreCompleto(nombreCompleto);
         setNombreUsuario(nombreUsuario);
         setRol(rol);
         setEmail(email);
+        setClubesSeguidos(clubes);
     }
 
     @Override
