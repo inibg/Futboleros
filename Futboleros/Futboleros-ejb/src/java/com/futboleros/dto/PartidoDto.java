@@ -8,8 +8,8 @@ import java.util.Date;
  */
 public class PartidoDto {
     private Long id;
-    private ClubDto clubLocal;
-    private ClubDto clubVisitante;
+    private Long clubLocal;
+    private Long clubVisitante;
     private Date fechaPartido;
     private Integer golesLocal;
     private Integer golesVisitante;
@@ -24,20 +24,20 @@ public class PartidoDto {
         this.id = id;
     }
 
-    public ClubDto getClubLocal() {
+    public Long getClubLocal() {
         return clubLocal;
     }
 
-    public void setClubLocal(ClubDto clubLocal) {
-        this.clubLocal = clubLocal;
+    public void setClubLocal(Long clubLocal) {
+        this.clubLocal=clubLocal;
     }
 
-    public ClubDto getClubVisitante() {
+    public Long getClubVisitante() {
         return clubVisitante;
     }
 
-    public void setClubVisitante(ClubDto clubVisitante) {
-        this.clubVisitante = clubVisitante;
+    public void setClubVisitante(Long clubVisitante) {
+        this.clubVisitante=clubVisitante;
     }
 
     public Date getFechaPartido() {
@@ -82,14 +82,19 @@ public class PartidoDto {
     
     public PartidoDto(){}
     
-    public PartidoDto(Long id, ClubDto local, ClubDto visitante, Date fechaPartido,
+    public PartidoDto(Long id, Long local, Long visitante,/*ClubDto local, ClubDto visitante,*/ Date fechaPartido,
             Integer golesLocal, Integer golesVisitante){
         setId(id);
-        setClubLocal(clubLocal);
-        setClubVisitante(clubVisitante);
+        setClubLocal(local);
+        setClubVisitante(visitante);
         setFechaPartido(fechaPartido);
         setGolesLocal(golesLocal);
         setGolesVisitante(golesVisitante);
+    }
+
+  @Override
+    public String toString(){
+        return "com.futboleros.dto.PartodpDto[ id=" + id + " ]";
     }
     
 }

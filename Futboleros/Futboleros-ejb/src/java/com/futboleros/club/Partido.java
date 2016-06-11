@@ -20,9 +20,10 @@ import javax.validation.constraints.NotNull;
  *
  * @author inibg
  */
-@Entity
-@Table(uniqueConstraints= { 
-    @UniqueConstraint(columnNames={"PartidoClubLocalId", "PartidoClubVisitanteId", "PartidoFecha"})})
+@Entity 
+//@IdClass(Partido.class)
+//@Table(uniqueConstraints= { 
+//@UniqueConstraint(columnNames={"PartidoClubLocalId", "PartidoClubVisitanteId", "PartidoFecha"})})
 public class Partido implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,16 +32,21 @@ public class Partido implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @ManyToOne(optional = false, targetEntity = Club.class)
-    @JoinColumn(name ="PartidoClubLocalId", referencedColumnName = "ClubId")
+   // @ManyToOne(optional = false, targetEntity = Club.class)
+    //@JoinColumn(name ="PartidoClubLocalId", referencedColumnName = "ClubId")
+  //  @Id
     @NotNull
-    private Club clubLocal;
+    @Column(name = "PartidoClubLocalId")
+    private Long clubLocal;
     
-    @ManyToOne(optional = false, targetEntity = Club.class)
-    @JoinColumn(name ="PartidoClubVisitanteId", referencedColumnName = "ClubId")
+  //  @ManyToOne(optional = false, targetEntity = Club.class)
+   // @JoinColumn(name ="PartidoClubVisitanteId", referencedColumnName = "ClubId")
+   //@Id
+    @Column(name = "PartidoClubVisitanteId")
     @NotNull
-    private Club clubVisitante;
+    private Long clubVisitante;
     
+    //@Id
     @Temporal(TemporalType.DATE)
     @NotNull
     @Column(name = "PartidoFecha")
@@ -66,19 +72,21 @@ public class Partido implements Serializable {
         this.id = id;
     }
 
-    public Club getClubLocal() {
-        return clubLocal;
-    }
-
-    public void setClubLocal(Club clubLocal) {
+    
+    public void setClubLocal(Long clubLocal) {
         this.clubLocal = clubLocal;
     }
 
-    public Club getClubVisitante() {
+    public Long getClubLocal() {
+        return this.clubLocal;
+    }
+
+    
+    public Long getClubVisitante() {
         return clubVisitante;
     }
 
-    public void setClubVisitante(Club clubVisitante) {
+    public void setClubVisitante(Long clubVisitante) {
         this.clubVisitante = clubVisitante;
     }
 
@@ -151,17 +159,18 @@ public class Partido implements Serializable {
     
     public Partido(){}
     
-    public Partido(Long id, Club local, Club visitante, Date fechaPartido,
+    public Partido(Long id, Long local, Long visitante, Date fechaPartido,
             Integer golesLocal, Integer golesVisitante){
         setId(id);
-        setClubLocal(clubLocal);
-        setClubVisitante(clubVisitante);
+        setClubLocal(local);
+        setClubVisitante(visitante);
         setGolesLocal(golesLocal);
         setGolesVisitante(golesVisitante);
+        setFechaPartido(fechaPartido);
     }
     
     private void calcularResultado(){
-        if (getGolesLocal() != null && getGolesVisitante() != null){
+      /*  if (getGolesLocal() != null && getGolesVisitante() != null){
             if (getGolesLocal() == getGolesVisitante()){
                 setResultado("EMPATE");
                 setGanador(null);
@@ -175,6 +184,6 @@ public class Partido implements Serializable {
                 }
                    
             }
-        }
+        }*/
     }
 }

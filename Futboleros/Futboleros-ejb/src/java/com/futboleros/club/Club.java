@@ -20,8 +20,15 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "obtenerClubPorNombre", 
             query = "SELECT c FROM Club c WHERE c.nombre = :nombreclub"),
     @NamedQuery(name = "obtenerTodosLosClubes", query = "SELECT c FROM Club c"
-            + " order by c.nombre")
+            + " order by c.nombre"),
+   @NamedQuery(name = "eliminarClub", query = "DELETE FROM Club c WHERE c.id =:idclub"),
+   
+   @NamedQuery(name = "modificarNombreClub", query = "UPDATE Club c SET c.nombre=:nombreClub WHERE c.id =:idclub")
+        
+        
+        
 })
+
 
 @Entity
 @XmlRootElement
