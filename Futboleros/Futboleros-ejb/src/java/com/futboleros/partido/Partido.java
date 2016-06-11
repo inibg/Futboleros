@@ -1,5 +1,6 @@
-package com.futboleros.club;
+package com.futboleros.partido;
 
+import com.futboleros.club.Club;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;

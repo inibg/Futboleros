@@ -1,8 +1,8 @@
 package com.futboleros.servicios.rest;
 
 import com.futboleros.club.ClubBean;
-import com.futboleros.club.Partido;
-import com.futboleros.club.PartidoBean;
+import com.futboleros.partido.Partido;
+import com.futboleros.partido.PartidoBean;
 import com.futboleros.dto.ClubDto;
 
 import com.futboleros.dto.PartidoDto;
