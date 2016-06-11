@@ -33,7 +33,7 @@ public class ClubBean {
         return nuevo;
     }
     
-    protected ClubDto toDto(Club ent){
+    public ClubDto toDto(Club ent){
         ClubDto nuevo = new ClubDto(ent.getId(), ent.getNombre());
         return nuevo;
     }
