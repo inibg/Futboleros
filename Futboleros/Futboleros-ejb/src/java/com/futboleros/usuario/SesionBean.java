@@ -73,6 +73,17 @@ public class SesionBean {
             return false;
         }
     }
+    
+    public SesionDto obtenerSesionPorUsuario(UsuarioDto usuario) throws Exception{
+        Usuario ue = usuarioBean.toEntity(usuario);
+        try{
+            Sesion buscado = em.createNamedQuery("ObtenerSesionPorUsuario",
+                    Sesion.class).setParameter("usuario", ue).getSingleResult();
+            return toDto(buscado);
+        }catch(Exception e){
+            throw e;
+        }
+    }
   
     
 }
