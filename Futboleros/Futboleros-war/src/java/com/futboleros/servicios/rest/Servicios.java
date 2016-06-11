@@ -128,6 +128,7 @@ public class Servicios {
     @POST
     @Path("/Clubes/Eliminar/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    //eliminar club
     public Response eliminarClub(@PathParam("id") Long id){
         logger.info("Invocado el servicio /Clubes/Eliminar");
         logger.info("Con este Json: " + id);
