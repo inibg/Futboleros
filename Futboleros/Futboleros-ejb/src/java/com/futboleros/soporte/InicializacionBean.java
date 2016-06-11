@@ -55,11 +55,25 @@ public class InicializacionBean {
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Defensor");
         clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Wanderers");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Cerro");
+        clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Plaza Colonia");
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Rentistas");
         clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Fenix");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Liverpool");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Tanque Sisley");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Juventud de Las Piedras");
+        clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "River Plate");
+        clubBean.agregarClub(nuevo);
+        nuevo = new ClubDto(0L, "Villa Teresa");
         clubBean.agregarClub(nuevo);
     }
     
