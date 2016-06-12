@@ -1,7 +1,12 @@
 package com.futboleros.usuario;
 
+import com.futboleros.club.Club;
+import com.futboleros.club.ClubBean;
+import com.futboleros.dto.ClubDto;
 import com.futboleros.dto.UsuarioDto;
+import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
@@ -18,6 +23,9 @@ public class UsuarioBean {
     @PersistenceContext
     private EntityManager em;
     
+    @EJB
+    private ClubBean cb;
+    
     public Usuario toEntity(UsuarioDto dto){
         Usuario nuevo = new Usuario(dto.getId(), dto.getNombreCompleto(),
                 dto.getNombreUsuario(), dto.getRol(),
@@ -26,10 +34,19 @@ public class UsuarioBean {
     }
     
     public UsuarioDto toDto(Usuario ent){
+        List<ClubDto> clubesDto = convertirClubes(ent.getClubesSeguidos());
         UsuarioDto nuevo = new UsuarioDto(ent.getId(), ent.getNombreCompleto(),
                     ent.getNombreUsuario(), ent.getRol(), 
-                ent.getEmail());
+                ent.getEmail(), clubesDto);
         return nuevo;
+    }
+    
+    private List<ClubDto> convertirClubes(List<Club> clubes){
+        List<ClubDto> convertidos = new ArrayList();
+        for (Club club : clubes) {
+            convertidos.add(cb.toDto(club));
+        }
+        return convertidos;
     }
     
     public Long agregarUsuario(UsuarioDto usuario) throws Exception{

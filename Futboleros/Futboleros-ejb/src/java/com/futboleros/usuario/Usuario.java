@@ -25,8 +25,10 @@ import org.hibernate.validator.constraints.Email;
 @NamedQueries({
     @NamedQuery(name = "obtenerUsuarioPorNombre", 
             query = "SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsuario"),
-    @NamedQuery(name = "obtenerTodosLosUsuarios", query = "SELECT u FROM Usuario u"
-            + " order by u.nombreUsuario")
+    @NamedQuery(name = "obtenerTodosLosUsuarios", 
+            query = "SELECT u FROM Usuario u order by u.nombreUsuario"),
+    @NamedQuery(name = "obtenerUsuarioPorClubSeguido", 
+            query = "SELECT u FROM Usuario u inner join u.clubesSeguidos cs where cs in :clubes")
 })
 
 @Entity
@@ -100,6 +102,14 @@ public class Usuario implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Club> getClubesSeguidos() {
+        return clubesSeguidos;
+    }
+
+    public void setClubesSeguidos(List<Club> clubesSeguidos) {
+        this.clubesSeguidos = clubesSeguidos;
     }
 
     @Override
