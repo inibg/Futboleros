@@ -598,7 +598,7 @@ public class Servicios {
     public void pruebamensaje(){
         try{
             JMSContext contextJms = connectionFactory.createContext();
-            contextJms.createProducer().send(queue, "te mando el mensaje piola");
+            contextJms.createProducer().send(queue, "180");
         }catch(Exception e){
                 
         }
