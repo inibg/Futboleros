@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,6 +23,11 @@ import javax.validation.constraints.NotNull;
  *
  * @author inibg
  */
+
+@NamedQueries({
+    @NamedQuery(name = "ActualizarResultado", query = "UPDATE Partido p SET p.golesLocal= :golesLocal, p.golesVisitante= :golesVisitante WHERE p.id = :idPartido"),   
+     
+})
 @Entity 
 //@IdClass(Partido.class)
 //@Table(uniqueConstraints= { 

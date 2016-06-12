@@ -76,9 +76,26 @@ public class PartidoBean {
         
             em.persist(nuevo);
           return nuevo.getId();
-      
     }
-    
-    
+     public PartidoDto obtenerPartidoPorId(Long id){
+        Partido buscado = em.find(Partido.class, id);
+        if (buscado==null){
+            return null;
+        }else{
+            return toDto(buscado);
+        }
+        
+    }
+      public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
+        logger.info("intentando actualizar el resultado del partido" + idPartido);
+        //PartidoDto partido= this.obtenerPartidoPorId(idPartido);
+        
+       
+       if (idPartido!=0){
+           em.createNamedQuery("ActualizarResultado",Partido.class).setParameter("idPartido",idPartido)
+                   .setParameter("golesLocal", golesLocal).setParameter("golesVisitante", golesVisitante).executeUpdate();
+       }
+        return idPartido;
+    }
 
 }

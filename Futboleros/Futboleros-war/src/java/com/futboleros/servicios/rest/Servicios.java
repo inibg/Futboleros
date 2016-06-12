@@ -169,8 +169,8 @@ public class Servicios {
                 this.cb.modificarNombreClub(clubBuscado.getId(), nombreNue);
                 return Response.ok("Se modificó el nombre del club: "+nombreOri +" por " + nombreNue).build();
             }else{
-                logger.info("No puede ser vacio pelotilla");
-                return Response.ok("No puede ser vacio pelotilla").build();
+                logger.info("El nombre del club no puede ser vacio");
+                return Response.ok("El nombre del club no puede ser vacio").build();
             }
             
         }else{
@@ -480,8 +480,7 @@ public class Servicios {
             logger.info("Se ha creado un partido con id club local : " + id );
             return Response.ok("{\"exito\":1, \"mensaje\":\"Se ha creado un partido con id: " + id + "\"}").build();
             }else{
-                logger.info("VINO NULO LA PUTA MADRE : "  );
-            return Response.ok("{\"exito\":1, \"mensaje\":\"NULO: \"}").build();
+                return Response.ok("{\"exito\":1, \"mensaje\":\"NULO: \"}").build();
                 
             }
         }catch(Exception e){
@@ -490,6 +489,31 @@ public class Servicios {
             return Response.ok("{\"exito\":0, \"mensaje\":\"El partido no pudo ser agregado\"}").build();
         }
     }
+    
+    @POST
+    @Path("/Partido/actualizarResultado/{idPartido}/{golesLocal}/{golesVisitante}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response actualizarResultadoPartido(@PathParam("idPartido") Long idPartido,@PathParam("golesLocal") Integer golesLocal,@PathParam("golesVisiante") Integer golesVisitante){     
+        PartidoDto PartidoAct = pb.obtenerPartidoPorId(idPartido);
+        
+        if(PartidoAct != null){
+            //modifico el resultado del partido
+            this.pb.ActualizarResultado(idPartido,golesLocal,golesVisitante);
+          
+             return Response.ok("Se actualizó el resultado del partido correctamente").build();
+        }else{
+            logger.info("No hay ningún partido con ese identificador");
+           // return Response.ok(jsonRespuesta).build();
+            return Response.ok("No hay ningún partido con ese identificador").build();
+        }
+        
+        
+        //Gson gson = new Gson();
+        //String jsonRespuesta = gson.toJson(clubBuscado);
+        //logger.info("La respuesta generada fue: " + jsonRespuesta);
+        //return Response.ok("a").build();
+    }
+
     //</editor-fold>
     
     @GET
