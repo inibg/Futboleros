@@ -28,7 +28,9 @@ import org.hibernate.validator.constraints.Email;
     @NamedQuery(name = "obtenerTodosLosUsuarios", 
             query = "SELECT u FROM Usuario u order by u.nombreUsuario"),
     @NamedQuery(name = "obtenerUsuarioPorClubSeguido", 
-            query = "SELECT u FROM Usuario u inner join u.clubesSeguidos cs where cs in :clubes")
+            query = "SELECT u FROM Usuario u inner join u.clubesSeguidos cs where cs in :clubes"),
+    @NamedQuery(name = "hacerUsuarioAdmin",
+            query = "UPDATE Usuario u SET u.rol = :rol where u.nombreUsuario = :nombreUsuario")
 })
 
 @Entity

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -175,15 +176,8 @@ public class Servicios {
             
         }else{
             logger.info("No existe pelotilla");
-           // return Response.ok(jsonRespuesta).build();
             return Response.ok("No existe pelotilla").build();
         }
-        
-        
-        //Gson gson = new Gson();
-        //String jsonRespuesta = gson.toJson(clubBuscado);
-        //logger.info("La respuesta generada fue: " + jsonRespuesta);
-        //return Response.ok(jsonRespuesta).build();
     }
 
     //</editor-fold>
@@ -323,7 +317,7 @@ public class Servicios {
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
         }
-        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, userName, Rol.CLIENTE, email);
+        UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, userName, Rol.CLIENTE, email, new ArrayList<ClubDto>());
         try{
             Long id = ub.agregarUsuario(nuevoUsuario);
             if (id > 0){
@@ -447,6 +441,89 @@ public class Servicios {
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
         }
+    }
+    
+    @POST
+    @Path("/Usuarios/HacerAdmin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response convierteAdmin(String requestJson){
+        logger.info("Invocado el servicio /Usuarios/IniciarSesion");
+        logger.info("con este json: " + requestJson);
+        String token = parse(requestJson, "AccessToken");
+        if (token.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }else{
+           if (!validarToken(token))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+           }
+        }
+        SesionDto sdto = sb.obtenerSesionPorToken(token);
+        if (sdto != null){
+            UsuarioDto udto = sdto.getUsuarioDto();
+            if (udto == null){
+                logger.error("Ocurrio un problema al obtener el usuario de la sesion");
+                MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar su usuario");
+                Gson gson = new Gson();
+                return Response.ok(gson.toJson(mr)).build();
+            }else{
+                if (udto.getRol() != Rol.ADMINISTRADOR){
+                    logger.error("Debe ser administrador para procesar la operacion");
+                    MensajeResponse mr = new MensajeResponse(false, "Debe ser administrador para realizar la operacion");
+                    Gson gson = new Gson();
+                    return Response.ok(gson.toJson(mr)).build();
+                }
+            }
+        }else{
+            logger.error("Ocurrio un problema al recuperar la sesion");
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al recuperar la sesion");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        String idUsuarioNuevoAdministrador = parse(requestJson, "UsuarioId");
+        if (idUsuarioNuevoAdministrador.isEmpty()){
+            logger.error("El json recibido no es correcto");
+            MensajeResponse mr = new MensajeResponse(false, "El json recibido no es correcto");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        Long idUsuario;
+        try{
+            idUsuario =  Long.parseLong(idUsuarioNuevoAdministrador);
+        }catch(Exception e){
+            logger.error("El json recibido no es correcto");
+            MensajeResponse mr = new MensajeResponse(false, "El json recibido no es correcto");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        UsuarioDto uNuevoAdmin;
+        try{
+            uNuevoAdmin = ub.obtenerUsuarioPorId(idUsuario);
+        }catch(Exception e){
+            logger.error("No se encontro un usuario con id " + idUsuario);
+            MensajeResponse mr = new MensajeResponse(false, "No se encontro un usuario con id " + idUsuario);
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        try{
+            ub.convertirUsuarioAdmin(uNuevoAdmin.getNombreUsuario());
+        }catch(Exception e){
+            logger.error("Ocurrio un problema al procesar su pedido");
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al procesar su pedido");
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        logger.error("Operacion realizada exitosamente");
+        MensajeResponse mr = new MensajeResponse(true, "Operacion realizada exitosamente");
+        Gson gson = new Gson();
+        return Response.ok(gson.toJson(mr)).build();
     }
     
 // </editor-fold>

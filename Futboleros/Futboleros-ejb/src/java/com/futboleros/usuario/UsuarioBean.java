@@ -84,4 +84,13 @@ public class UsuarioBean {
             throw e;
         }
     }
+    
+    public void convertirUsuarioAdmin(String nombre) throws Exception{
+        try{
+            em.createNamedQuery("hacerUsuarioAdmin").setParameter("nombreUsuario",
+                    nombre).setParameter("rol", Rol.ADMINISTRADOR).executeUpdate();
+        }catch(Exception e){
+            throw e;
+        }
+    }
 }
