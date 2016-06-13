@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.futboleros.soporte;
+package com.futboleros.configuracion;
 
 import com.futboleros.club.ClubBean;
 import com.futboleros.dto.ClubDto;

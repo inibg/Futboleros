@@ -324,6 +324,7 @@ public class Servicios {
             return Response.ok(gson.toJson(mr)).build();
         }
         UsuarioDto nuevoUsuario = new UsuarioDto(0L, nombreCompleto, userName, Rol.CLIENTE, email);
+        
         try{
             Long id = ub.agregarUsuario(nuevoUsuario);
             if (id > 0){
@@ -345,6 +346,7 @@ public class Servicios {
             Gson gson = new Gson();
             return Response.ok(gson.toJson(mr)).build();
         }
+        
     }
     
     @POST

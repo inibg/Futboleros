@@ -45,26 +45,21 @@ public class PartidoBean {
     
     public Long agregarPartido(PartidoDto dto){
         Partido nuevo = toEntity(dto);
-<<<<<<< HEAD
+
         
             em.persist(nuevo);
           return nuevo.getId();
     }
-     public PartidoDto obtenerPartidoPorId(Long id){
-=======
-        em.persist(nuevo);
-        return nuevo.getId();
-    }
     
     public PartidoDto obtenerPartidoPorId(Long id){
->>>>>>> fc863eed2fa0368ce7858019b3d9629e20df04a5
+
         Partido buscado = em.find(Partido.class, id);
         if (buscado==null){
             return null;
         }else{
             return toDto(buscado);
         }
-<<<<<<< HEAD
+
         
     }
       public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
@@ -78,9 +73,6 @@ public class PartidoBean {
        }
         return idPartido;
     }
-=======
-    }
-    
->>>>>>> fc863eed2fa0368ce7858019b3d9629e20df04a5
 
+   
 }

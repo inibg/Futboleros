@@ -1,5 +1,5 @@
 
-package com.futboleros.soporte;
+package com.futboleros.configuracion;
 
 import com.futboleros.dto.ParametroDto;
 import javax.ejb.Stateless;
