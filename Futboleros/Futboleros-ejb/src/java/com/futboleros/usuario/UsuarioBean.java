@@ -84,4 +84,29 @@ public class UsuarioBean {
             throw e;
         }
     }
+    
+    public void convertirUsuarioAdmin(String nombre) throws Exception{
+        try{
+            em.createNamedQuery("hacerUsuarioAdmin").setParameter("nombreUsuario",
+                    nombre).setParameter("rol", Rol.ADMINISTRADOR).executeUpdate();
+        }catch(Exception e){
+            throw e;
+        }
+    }
+    
+    public List<UsuarioDto> obtenerSeguidoresDeUnClub(Long idClub) throws Exception{
+        List<Usuario> usuarios = new ArrayList();
+        List<UsuarioDto> retorno = new ArrayList();
+        try{
+            ClubDto cd = cb.obtenerClubPorId(idClub);
+            Club ce = cb.toEntity(cd);
+            usuarios = (List<Usuario>) em.createNamedQuery("obtenerUsuariosPorClubSeguido").setParameter("club", ce).getResultList();
+            for (Usuario u : usuarios){
+                retorno.add(toDto(u));
+            }
+        }catch(Exception e){
+            throw e;
+        }
+        return retorno;
+    }
 }

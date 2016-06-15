@@ -46,10 +46,12 @@ public class PartidoBean {
     public Long agregarPartido(PartidoDto dto){
         Partido nuevo = toEntity(dto);
 
-        
+   
             em.persist(nuevo);
           return nuevo.getId();
     }
+    
+
     
     public PartidoDto obtenerPartidoPorId(Long id){
 
@@ -60,19 +62,17 @@ public class PartidoBean {
             return toDto(buscado);
         }
 
+
         
+
     }
-      public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
+
+    public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
         logger.info("intentando actualizar el resultado del partido" + idPartido);
-        //PartidoDto partido= this.obtenerPartidoPorId(idPartido);
-        
-       
        if (idPartido!=0){
            em.createNamedQuery("ActualizarResultado",Partido.class).setParameter("idPartido",idPartido)
                    .setParameter("golesLocal", golesLocal).setParameter("golesVisitante", golesVisitante).executeUpdate();
        }
         return idPartido;
     }
-
-   
 }

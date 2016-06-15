@@ -28,7 +28,7 @@ public class ClubBean {
     
     private static final Logger logger = LogManager.getLogger(ClubBean.class);
     
-    protected Club toEntity(ClubDto dto){
+    public Club toEntity(ClubDto dto){
         Club nuevo = new Club(dto.getId(), dto.getNombre());
         return nuevo;
     }

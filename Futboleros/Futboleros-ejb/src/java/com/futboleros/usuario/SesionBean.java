@@ -59,6 +59,16 @@ public class SesionBean {
         return false;                   
     }
     
+    public SesionDto obtenerSesionPorToken(String sesionToken){
+        try{
+            Sesion buscado = em.createNamedQuery("ObtenerSesionPorToken",
+                 Sesion.class).setParameter("sesionToken", sesionToken).getSingleResult();
+            return toDto(buscado);
+        }catch(Exception e){
+            return null;
+        }
+    }
+    
     public boolean terminarSesion(String sesionToken){
         try{
             Sesion buscado = em.createNamedQuery("ObtenerSesionPorToken",
