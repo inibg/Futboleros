@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @NamedQueries({
-    @NamedQuery(name = "ActualizarResultado", query = "UPDATE Partido p SET p.golesLocal= :golesLocal, p.golesVisitante= :golesVisitante WHERE p.id = :idPartido"),   
+    @NamedQuery(name = "ActualizarResultado", query = "UPDATE Partido p SET p.golesLocal= :golesLocal WHERE p.id = :idPartido"),   
      
 })
 @Entity 

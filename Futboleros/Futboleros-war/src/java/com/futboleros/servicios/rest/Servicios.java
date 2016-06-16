@@ -578,9 +578,10 @@ public class Servicios {
     @Produces(MediaType.APPLICATION_JSON)
     public Response actualizarResultadoPartido(@PathParam("idPartido") Long idPartido,@PathParam("golesLocal") Integer golesLocal,@PathParam("golesVisiante") Integer golesVisitante){     
         PartidoDto PartidoAct = pb.obtenerPartidoPorId(idPartido);
-        
+        logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         if(PartidoAct != null){
             //modifico el resultado del partido
+            logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
             this.pb.ActualizarResultado(idPartido,golesLocal,golesVisitante);
           
              return Response.ok("Se actualizó el resultado del partido correctamente").build();

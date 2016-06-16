@@ -42,11 +42,12 @@ public class InicializacionBean {
     public void inicializarDb(){
         logger.info("EjecutaInicializar");
         cargarClubes();
-      //  cargarParametros();
+     //   cargarParametros();
     }
     
     
     private void cargarClubes(){
+   
         ClubDto nuevo = new ClubDto(0L, "Peñarol");
         clubBean.agregarClub(nuevo);
         nuevo = new ClubDto(0L, "Nacional");
