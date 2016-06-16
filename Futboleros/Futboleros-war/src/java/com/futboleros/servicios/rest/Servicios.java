@@ -573,7 +573,7 @@ public class Servicios {
         }
     }
     
-    @POST
+   /* @POST
     @Path("/Partido/actualizarResultado/{idPartido}/{golesLocal}/{golesVisitante}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response actualizarResultadoPartido(@PathParam("idPartido") Long idPartido,@PathParam("golesLocal") Integer golesLocal,@PathParam("golesVisiante") Integer golesVisitante){     
@@ -581,7 +581,7 @@ public class Servicios {
         logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         if(PartidoAct != null){
             //modifico el resultado del partido
-            logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+            logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"+golesVisitante);
             this.pb.ActualizarResultado(idPartido,golesLocal,golesVisitante);
           
              return Response.ok("Se actualizó el resultado del partido correctamente").build();
@@ -596,6 +596,48 @@ public class Servicios {
         //String jsonRespuesta = gson.toJson(clubBuscado);
         //logger.info("La respuesta generada fue: " + jsonRespuesta);
         //return Response.ok("a").build();
+        
+        
+        
+        
+        
+    }*/
+    
+     @POST
+    @Path("/Partido/actualizarResultado")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response actualizarResultadoPartido(String JsonPartido){     
+        logger.info("Invocado el servicio /Partido/actualizarResultado");
+        logger.info("Con este Json: " + JsonPartido);
+        Gson gson = new Gson();
+        PartidoDto ActPartido;
+        
+        try
+        {
+            ActPartido = gson.fromJson(JsonPartido, PartidoDto.class);
+    
+        }catch(Exception e){
+            logger.error("Ocurrio un error al convertir el Json en un PartidoDto " 
+            + e.getMessage());
+            return Response.ok("{\"exito\":0, \"mensaje\":\"El Json recibido no es correcto\"}").build();
+        }
+        try
+        {
+           
+            Long id=this.pb.ActualizarResultado(ActPartido);
+            
+            if(id!=0){        
+               logger.info("Se actualizó el resultado del partido : " + id );
+               return Response.ok("{\"exito\":1, \"mensaje\":\"Se actualizó el resultado del partido: " + id + "\"}").build();
+            }else{
+                return Response.ok("{\"exito\":1, \"mensaje\":\"NULO: \"}").build();
+                
+            }
+        }catch(Exception e){
+            logger.error("Ocurrio un error al actualizar el resultado del partido " 
+            + e.getMessage());
+            return Response.ok("{\"exito\":0, \"mensaje\":\"El partido no pudo ser actualizado\"}").build();
+        }
     }
 
     //</editor-fold>

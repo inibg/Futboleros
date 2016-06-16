@@ -24,10 +24,7 @@ import javax.validation.constraints.NotNull;
  * @author inibg
  */
 
-@NamedQueries({
-    @NamedQuery(name = "ActualizarResultado", query = "UPDATE Partido p SET p.golesLocal= :golesLocal, p.golesVisitante= :golesVisitante WHERE p.id = :idPartido"),   
-     
-})
+
 @Entity 
 //@IdClass(Partido.class)
 //@Table(uniqueConstraints= { 

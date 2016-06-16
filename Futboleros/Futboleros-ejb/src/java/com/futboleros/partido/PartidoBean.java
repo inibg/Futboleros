@@ -67,12 +67,15 @@ public class PartidoBean {
 
     }
 
-    public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
-        logger.info("intentando actualizar el resultado del partido" + idPartido);
-       if (idPartido!=0){
-           em.createNamedQuery("ActualizarResultado",Partido.class).setParameter("idPartido",idPartido)
-                   .setParameter("golesLocal", golesLocal).setParameter("golesVisitante", golesVisitante).executeUpdate();
+    public Long ActualizarResultado(PartidoDto ActPardidoDto){
+        //public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
+        logger.info("intentando actualizar el resultado del partido" + ActPardidoDto.getId());
+       
+       if (ActPardidoDto.getId()!=0){
+           Partido ActPartido = this.toEntity(ActPardidoDto);
+           em.merge(ActPartido);
        }
-        return idPartido;
+       
+        return ActPardidoDto.getId();
     }
 }

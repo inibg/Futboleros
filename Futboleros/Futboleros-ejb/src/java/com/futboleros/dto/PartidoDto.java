@@ -14,7 +14,7 @@ public class PartidoDto {
     private Integer golesLocal;
     private Integer golesVisitante;
     private String resultado;
-    private ClubDto ganador;
+  
 
     public Long getId() {
         return id;
@@ -72,13 +72,7 @@ public class PartidoDto {
         this.resultado = resultado;
     }
 
-    public ClubDto getGanador() {
-        return ganador;
-    }
-
-    public void setGanador(ClubDto ganador) {
-        this.ganador = ganador;
-    }
+ 
     
     public PartidoDto(){}
     
