@@ -1,7 +1,6 @@
 package com.futboleros.servicios.rest;
 
 import com.futboleros.club.ClubBean;
-import com.futboleros.partido.Partido;
 import com.futboleros.partido.PartidoBean;
 import com.futboleros.dto.ClubDto;
 import com.futboleros.dto.PartidoDto;
@@ -83,9 +82,23 @@ public class Servicios {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerClub(@PathParam("id") Long id){
         logger.info("Invocado el servicio /Clubes/{id}");
-        ClubDto clubBuscado = cb.obtenerClubPorId(id);
+        ClubDto clubBuscado = null;
+        String jsonRespuesta;
+        MensajeResponse mr = null;
         Gson gson = new Gson();
-        String jsonRespuesta = gson.toJson(clubBuscado);
+        try{
+            clubBuscado = cb.obtenerClubPorId(id);            
+            if (clubBuscado == null)
+                mr = new MensajeResponse(false, "Club no encontrado");
+        }catch(Exception e){
+            mr = new MensajeResponse(false, "Club no encontrado");
+        }
+        if (mr != null && clubBuscado == null)
+        {
+            jsonRespuesta = gson.toJson(mr);
+        }else{
+            jsonRespuesta = gson.toJson(clubBuscado);
+        }
         logger.info("La respuesta generada fue: " + jsonRespuesta);
         return Response.ok(jsonRespuesta).build();
     }
@@ -95,9 +108,21 @@ public class Servicios {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerClub(@PathParam("nombre") String nombre){
         logger.info("Invocado el servicio /Clubes/Nombre/{nombre}");
-        ClubDto clubBuscado = cb.obtenerClubPorNombre(nombre);
+        String jsonRespuesta;
+        MensajeResponse mr = null;
+        ClubDto clubBuscado = null;
+        try{
+            clubBuscado = cb.obtenerClubPorNombre(nombre);
+        }catch (Exception e){
+            mr = new MensajeResponse(false, "Club no encontrado");
+        }
         Gson gson = new Gson();
-        String jsonRespuesta = gson.toJson(clubBuscado);
+        if (mr != null && clubBuscado == null){
+            jsonRespuesta = gson.toJson(mr);
+        }else
+        {
+            jsonRespuesta = gson.toJson(clubBuscado);
+        }
         logger.info("La respuesta generada fue: " + jsonRespuesta);
         return Response.ok(jsonRespuesta).build();
     }
@@ -159,7 +184,7 @@ public class Servicios {
 
     @POST
     @Path("/Clubes/CambiarNombre/{nombreOriginal}/{nombreNuevo}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response modificarNombreClub(@PathParam("nombreOriginal") String nombreOri,@PathParam("nombreNuevo") String nombreNue){
         logger.info("Invocado el servicio /Clubes/CambiarNombre/{nombreOriginal}/{nombreNuevo}");
         ClubDto clubBuscado = cb.obtenerClubPorNombre(nombreOri);
@@ -573,37 +598,8 @@ public class Servicios {
         }
     }
     
-   /* @POST
-    @Path("/Partido/actualizarResultado/{idPartido}/{golesLocal}/{golesVisitante}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response actualizarResultadoPartido(@PathParam("idPartido") Long idPartido,@PathParam("golesLocal") Integer golesLocal,@PathParam("golesVisiante") Integer golesVisitante){     
-        PartidoDto PartidoAct = pb.obtenerPartidoPorId(idPartido);
-        logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        if(PartidoAct != null){
-            //modifico el resultado del partido
-            logger.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"+golesVisitante);
-            this.pb.ActualizarResultado(idPartido,golesLocal,golesVisitante);
-          
-             return Response.ok("Se actualizó el resultado del partido correctamente").build();
-        }else{
-            logger.info("No hay ningún partido con ese identificador");
-           // return Response.ok(jsonRespuesta).build();
-            return Response.ok("No hay ningún partido con ese identificador").build();
-        }
-        
-        
-        //Gson gson = new Gson();
-        //String jsonRespuesta = gson.toJson(clubBuscado);
-        //logger.info("La respuesta generada fue: " + jsonRespuesta);
-        //return Response.ok("a").build();
-        
-        
-        
-        
-        
-    }*/
-    
-     @POST
+   
+    @POST
     @Path("/Partido/actualizarResultado")
     @Produces(MediaType.APPLICATION_JSON)
     public Response actualizarResultadoPartido(String JsonPartido){     
@@ -611,11 +607,9 @@ public class Servicios {
         logger.info("Con este Json: " + JsonPartido);
         Gson gson = new Gson();
         PartidoDto ActPartido;
-        
         try
         {
             ActPartido = gson.fromJson(JsonPartido, PartidoDto.class);
-    
         }catch(Exception e){
             logger.error("Ocurrio un error al convertir el Json en un PartidoDto " 
             + e.getMessage());
@@ -623,15 +617,13 @@ public class Servicios {
         }
         try
         {
-           
             Long id=this.pb.ActualizarResultado(ActPartido);
-            
-            if(id!=0){        
+            if(id != 0){
+               enviarMensaje(id.toString());
                logger.info("Se actualizó el resultado del partido : " + id );
                return Response.ok("{\"exito\":1, \"mensaje\":\"Se actualizó el resultado del partido: " + id + "\"}").build();
             }else{
                 return Response.ok("{\"exito\":1, \"mensaje\":\"NULO: \"}").build();
-                
             }
         }catch(Exception e){
             logger.error("Ocurrio un error al actualizar el resultado del partido " 
@@ -642,12 +634,10 @@ public class Servicios {
 
     //</editor-fold>
     
-    @GET
-    @Path("/pruebajms")
-    public void pruebamensaje(){
+    public void enviarMensaje(String numeroPartido){
         try{
             JMSContext contextJms = connectionFactory.createContext();
-            contextJms.createProducer().send(queue, "180");
+            contextJms.createProducer().send(queue, numeroPartido);
         }catch(Exception e){
                 
         }

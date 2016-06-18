@@ -90,7 +90,7 @@ public class Notificador implements MessageListener {
                 logger.info(d.getEmail());
             }
             List<UsuarioDto> usuariosVisitantes = ub.obtenerSeguidoresDeUnClub(clubVisitante.getId());
-            for(UsuarioDto d : usuariosLocales){
+            for(UsuarioDto d : usuariosVisitantes){
                 logger.info(d.getEmail());
             }
         }catch(Exception e){

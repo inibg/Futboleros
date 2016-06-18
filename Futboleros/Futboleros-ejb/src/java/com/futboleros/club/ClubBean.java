@@ -62,7 +62,6 @@ public class ClubBean {
         }else{
             return toDto(buscado);
         }
-        
     }
     
     @SuppressWarnings("unchecked")
