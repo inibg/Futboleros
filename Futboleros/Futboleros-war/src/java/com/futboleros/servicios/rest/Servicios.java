@@ -65,27 +65,50 @@ public class Servicios {
     private  QueueConnectionFactory connectionFactory;
 
 // <editor-fold defaultstate="collapsed" desc=" Clubes ">    
-    @GET
+    @POST
     @Path("/Clubes")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerClubes(){
+    public Response obtenerClubes(String requestJson){
         logger.info("Invocado el servicio /Clubes");
-        List<ClubDto> clubes = cb.obtenerTodosLosClubes();
         Gson gson = new Gson();
+        String accessToken = parse(requestJson, "accessToken");
+        try{
+            if (!validarToken(accessToken)){
+                MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
+                return Response.ok(gson.toJson(mr)).build();
+            }
+        }catch(Exception e){
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar la sesion");
+            return Response.ok(gson.toJson(mr)).build();
+        }
+  
+        List<ClubDto> clubes = cb.obtenerTodosLosClubes();
         String jsonRespuesta = gson.toJson(clubes);
         logger.info("La respuesta generada fue: " + jsonRespuesta);
         return Response.ok(jsonRespuesta).build();
     }
     
-    @GET
+    @POST
     @Path("/Clubes/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerClub(@PathParam("id") Long id){
+    public Response obtenerClub(@PathParam("id") Long id, String requestJson){
         logger.info("Invocado el servicio /Clubes/{id}");
+        Gson gson = new Gson();
+        String accessToken = parse(requestJson, "accessToken");
+        try{
+            if (!validarToken(accessToken)){
+                MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
+                return Response.ok(gson.toJson(mr)).build();
+            }
+        }catch(Exception e){
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar la sesion");
+            return Response.ok(gson.toJson(mr)).build();
+        }
         ClubDto clubBuscado = null;
         String jsonRespuesta;
         MensajeResponse mr = null;
-        Gson gson = new Gson();
         try{
             clubBuscado = cb.obtenerClubPorId(id);            
             if (clubBuscado == null)
@@ -103,11 +126,24 @@ public class Servicios {
         return Response.ok(jsonRespuesta).build();
     }
     
-    @GET
+    @POST
     @Path("/Clubes/Nombre/{nombre}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerClub(@PathParam("nombre") String nombre){
+    public Response obtenerClub(@PathParam("nombre") String nombre, String requestJson){
         logger.info("Invocado el servicio /Clubes/Nombre/{nombre}");
+        Gson gson = new Gson();
+        String accessToken = parse(requestJson, "accessToken");
+        try{
+            if (!validarToken(accessToken)){
+                MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
+                return Response.ok(gson.toJson(mr)).build();
+            }
+        }catch(Exception e){
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar la sesion");
+            return Response.ok(gson.toJson(mr)).build();
+        }   
+        
         String jsonRespuesta;
         MensajeResponse mr = null;
         ClubDto clubBuscado = null;
@@ -116,7 +152,6 @@ public class Servicios {
         }catch (Exception e){
             mr = new MensajeResponse(false, "Club no encontrado");
         }
-        Gson gson = new Gson();
         if (mr != null && clubBuscado == null){
             jsonRespuesta = gson.toJson(mr);
         }else
@@ -134,6 +169,12 @@ public class Servicios {
     public Response nuevoClub(String nuevoClubJson){
         logger.info("Invocado el servicio /Clubes/nuevo");
         logger.info("Con este Json: " + nuevoClubJson);
+        String token = parse(nuevoClubJson, "AccessToken");
+        MensajeResponse validaAdmin = validarUsuarioAdmin(token);
+        if (validaAdmin.getExito() == false){
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(validaAdmin)).build();
+        }
         Gson gson = new Gson();
         ClubDto nuevoClub;
         try
@@ -159,11 +200,18 @@ public class Servicios {
     
     @POST
     @Path("/Clubes/Eliminar/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //eliminar club
-    public Response eliminarClub(@PathParam("id") Long id){
+    public Response eliminarClub(@PathParam("id") Long id, String clubJson){
         logger.info("Invocado el servicio /Clubes/Eliminar");
         logger.info("Con este Json: " + id);
+        String token = parse(clubJson, "AccessToken");
+        MensajeResponse validaAdmin = validarUsuarioAdmin(token);
+        if (validaAdmin.getExito() == false){
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(validaAdmin)).build();
+        }
         try
         {
             boolean elimino = cb.eliminarClub(id);
@@ -184,9 +232,17 @@ public class Servicios {
 
     @POST
     @Path("/Clubes/CambiarNombre/{nombreOriginal}/{nombreNuevo}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response modificarNombreClub(@PathParam("nombreOriginal") String nombreOri,@PathParam("nombreNuevo") String nombreNue){
+    public Response modificarNombreClub(@PathParam("nombreOriginal") String nombreOri,@PathParam("nombreNuevo") String nombreNue, String clubJson){
         logger.info("Invocado el servicio /Clubes/CambiarNombre/{nombreOriginal}/{nombreNuevo}");
+        logger.info("Con el siguiente json: " + clubJson);
+        String token = parse(clubJson, "AccessToken");
+        MensajeResponse validaAdmin = validarUsuarioAdmin(token);
+        if (validaAdmin.getExito() == false){
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(validaAdmin)).build();
+        }
         ClubDto clubBuscado = cb.obtenerClubPorNombre(nombreOri);
         
         if(clubBuscado != null){
@@ -482,41 +538,10 @@ public class Servicios {
         logger.info("Invocado el servicio /Usuarios/IniciarSesion");
         logger.info("con este json: " + requestJson);
         String token = parse(requestJson, "AccessToken");
-        if (token.isEmpty()){
-            logger.warn("La solicitud fue realizada sin AccessToken");
-            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+        MensajeResponse validaAdmin = validarUsuarioAdmin(token);
+        if (validaAdmin.getExito() == false){
             Gson gson = new Gson();
-            return Response.ok(gson.toJson(mr)).build();
-        }else{
-           if (!validarToken(token))
-           {
-                logger.warn("El AccessToken proporcionado no es válido");
-                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
-                Gson gson = new Gson();
-                return Response.ok(gson.toJson(mr)).build();
-           }
-        }
-        SesionDto sdto = sb.obtenerSesionPorToken(token);
-        if (sdto != null){
-            UsuarioDto udto = sdto.getUsuarioDto();
-            if (udto == null){
-                logger.error("Ocurrio un problema al obtener el usuario de la sesion");
-                MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar su usuario");
-                Gson gson = new Gson();
-                return Response.ok(gson.toJson(mr)).build();
-            }else{
-                if (udto.getRol() != Rol.ADMINISTRADOR){
-                    logger.error("Debe ser administrador para procesar la operacion");
-                    MensajeResponse mr = new MensajeResponse(false, "Debe ser administrador para realizar la operacion");
-                    Gson gson = new Gson();
-                    return Response.ok(gson.toJson(mr)).build();
-                }
-            }
-        }else{
-            logger.error("Ocurrio un problema al recuperar la sesion");
-            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al recuperar la sesion");
-            Gson gson = new Gson();
-            return Response.ok(gson.toJson(mr)).build();
+            return Response.ok(gson.toJson(validaAdmin)).build();
         }
         String idUsuarioNuevoAdministrador = parse(requestJson, "UsuarioId");
         if (idUsuarioNuevoAdministrador.isEmpty()){
@@ -567,6 +592,12 @@ public class Servicios {
     public Response nuevoPartido(String nuevoPartidoJson){
         logger.info("Invocado el servicio /Partido/nuevo");
         logger.info("Con este Json: " + nuevoPartidoJson);
+        String token = parse(nuevoPartidoJson, "AccessToken");
+        MensajeResponse validaAdmin = validarUsuarioAdmin(token);
+        if (validaAdmin.getExito() == false){
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(validaAdmin)).build();
+        }
         Gson gson = new Gson();
         PartidoDto nuevoPartido;
         
@@ -605,6 +636,12 @@ public class Servicios {
     public Response actualizarResultadoPartido(String JsonPartido){     
         logger.info("Invocado el servicio /Partido/actualizarResultado");
         logger.info("Con este Json: " + JsonPartido);
+        String token = parse(JsonPartido, "AccessToken");
+        MensajeResponse validaAdmin = validarUsuarioAdmin(token);
+        if (validaAdmin.getExito() == false){
+            Gson gson = new Gson();
+            return Response.ok(gson.toJson(validaAdmin)).build();
+        }
         Gson gson = new Gson();
         PartidoDto ActPartido;
         try
@@ -655,5 +692,41 @@ public class Servicios {
     
     public boolean validarToken(String accessToken){
         return sb.sesionValida(accessToken);
+    }
+    
+    public MensajeResponse validarUsuarioAdmin(String accessToken){
+        if (accessToken.isEmpty()){
+            logger.warn("La solicitud fue realizada sin AccessToken");
+            MensajeResponse mr = new MensajeResponse(false, "Debe ingresar su AccessToken");
+            return mr;
+        }else{
+           if (!validarToken(accessToken))
+           {
+                logger.warn("El AccessToken proporcionado no es válido");
+                MensajeResponse mr = new MensajeResponse(false, "AccessToken no valido, intente iniciar sesión nuevamente");
+                return mr;
+           }
+        }
+        SesionDto sdto = sb.obtenerSesionPorToken(accessToken);
+        if (sdto != null){
+            UsuarioDto udto = sdto.getUsuarioDto();
+            if (udto == null){
+                logger.error("Ocurrio un problema al obtener el usuario de la sesion");
+                MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar su usuario");
+                return mr;
+            }else{
+                if (udto.getRol() != Rol.ADMINISTRADOR){
+                    logger.error("Debe ser administrador para procesar la operacion");
+                    MensajeResponse mr = new MensajeResponse(false, "Debe ser administrador para realizar la operacion");
+                    return mr;
+                }
+            }
+        }else{
+            logger.error("Ocurrio un problema al recuperar la sesion");
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al recuperar la sesion");
+            return mr;
+        }
+        MensajeResponse mr = new MensajeResponse(true, "");
+        return mr;
     }
 }
