@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.futboleros.dto;
+package com.futboleros.usuario;
 
 import java.util.Date;
 

@@ -1,5 +1,6 @@
-package com.futboleros.dto;
+package com.futboleros.usuario;
 
+import com.futboleros.club.ClubDto;
 import com.futboleros.usuario.Rol;
 import java.util.List;
 

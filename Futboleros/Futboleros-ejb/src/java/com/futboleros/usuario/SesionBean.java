@@ -1,8 +1,6 @@
 
 package com.futboleros.usuario;
 
-import com.futboleros.dto.SesionDto;
-import com.futboleros.dto.UsuarioDto;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;

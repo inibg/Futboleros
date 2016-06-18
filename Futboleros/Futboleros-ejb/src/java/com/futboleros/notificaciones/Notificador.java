@@ -6,9 +6,9 @@
 package com.futboleros.notificaciones;
 
 import com.futboleros.club.ClubBean;
-import com.futboleros.dto.ClubDto;
-import com.futboleros.dto.PartidoDto;
-import com.futboleros.dto.UsuarioDto;
+import com.futboleros.club.ClubDto;
+import com.futboleros.partido.PartidoDto;
+import com.futboleros.usuario.UsuarioDto;
 import com.futboleros.partido.PartidoBean;
 import com.futboleros.usuario.UsuarioBean;
 import java.util.List;

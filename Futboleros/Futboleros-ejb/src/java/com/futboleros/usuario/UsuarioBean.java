@@ -2,8 +2,7 @@ package com.futboleros.usuario;
 
 import com.futboleros.club.Club;
 import com.futboleros.club.ClubBean;
-import com.futboleros.dto.ClubDto;
-import com.futboleros.dto.UsuarioDto;
+import com.futboleros.club.ClubDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;

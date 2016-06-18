@@ -5,7 +5,6 @@
  */
 package com.futboleros.club;
 
-import com.futboleros.dto.ClubDto;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;

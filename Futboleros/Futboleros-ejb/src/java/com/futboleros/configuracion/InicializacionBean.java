@@ -6,8 +6,7 @@
 package com.futboleros.configuracion;
 
 import com.futboleros.club.ClubBean;
-import com.futboleros.dto.ClubDto;
-import com.futboleros.dto.ParametroDto;
+import com.futboleros.club.ClubDto;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -32,17 +31,13 @@ public class InicializacionBean {
     
     @EJB
     ClubBean clubBean;
-    
-    @EJB
-    ParametroBean parametroBean;
-    
+        
     private static final Logger logger = LogManager.getLogger(InicializacionBean.class);
     
     @PostConstruct
     public void inicializarDb(){
         logger.info("EjecutaInicializar");
         cargarClubes();
-     //   cargarParametros();
     }
     
     
@@ -81,8 +76,4 @@ public class InicializacionBean {
     public InicializacionBean(){
     }
     
-    private void cargarParametros(){
-        ParametroDto nuevoPar = new ParametroDto(0L, "Version","1.1", false);
-        parametroBean.agregarParametro(nuevoPar);
-    }
 }

@@ -1,4 +1,4 @@
-package com.futboleros.dto;
+package com.futboleros.partido;
 
 import java.util.Date;
 

@@ -2,10 +2,10 @@ package com.futboleros.servicios.rest;
 
 import com.futboleros.club.ClubBean;
 import com.futboleros.partido.PartidoBean;
-import com.futboleros.dto.ClubDto;
-import com.futboleros.dto.PartidoDto;
-import com.futboleros.dto.SesionDto;
-import com.futboleros.dto.UsuarioDto;
+import com.futboleros.club.ClubDto;
+import com.futboleros.partido.PartidoDto;
+import com.futboleros.usuario.SesionDto;
+import com.futboleros.usuario.UsuarioDto;
 import com.futboleros.usuario.Rol;
 import com.futboleros.usuario.SesionBean;
 import com.futboleros.usuario.TwitterAuthentication;

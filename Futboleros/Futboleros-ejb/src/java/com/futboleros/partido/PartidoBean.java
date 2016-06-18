@@ -6,7 +6,6 @@
 package com.futboleros.partido;
 
 import com.futboleros.club.ClubBean;
-import com.futboleros.dto.PartidoDto;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
