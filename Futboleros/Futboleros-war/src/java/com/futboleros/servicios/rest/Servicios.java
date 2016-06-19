@@ -180,6 +180,7 @@ public class Servicios {
         ClubDto nuevoClub;
         try
         {
+            
             nuevoClub = gson.fromJson(nuevoClubJson, ClubDto.class);
         }catch(Exception e){
             logger.error("Ocurrio un error al convertir el Json en un ClubDto " 
@@ -188,10 +189,14 @@ public class Servicios {
         }
         try
         {
-            
-            Long id = cb.agregarClub(nuevoClub);
-            logger.info("Se ha creado un club con id: " + id );
-            return Response.ok("{\"exito\":1, \"mensaje\":\"Se ha creado un club con id: " + id + "\"}").build();
+            if (cb.obtenerClubPorNombre(nuevoClub.getNombre()) == null){
+                Long id = cb.agregarClub(nuevoClub);
+                logger.info("Se ha creado un club con id: " + id );
+                return Response.ok("{\"exito\":1, \"mensaje\":\"Se ha creado un club con id: " + id + "\"}").build();
+            }else{
+                logger.error("El club ya existe ");
+               return Response.ok("{\"exito\":0, \"mensaje\":\"El club ya existe \"}").build();
+            }
         }catch(Exception e){
             logger.error("Ocurrio un error al grabar el club " 
             + e.getMessage());
