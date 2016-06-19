@@ -595,6 +595,39 @@ public class Servicios {
         return Response.ok(gson.toJson(mr)).build();
     }
     
+    @POST
+    @Path("/Usuarios/SeguirClub/{idClub}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response seguirClub(String requestJson, @PathParam("idClub") Long idClub){
+        logger.info("Invocado el servicio /Usuarios/SeguirClub/" + idClub.toString());
+        logger.info("con este json: " + requestJson);
+        Gson gson = new Gson();
+        String accessToken = parse(requestJson, "AccessToken");
+        try{
+            if (!validarToken(accessToken)){
+                MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
+                return Response.ok(gson.toJson(mr)).build();
+            }
+        }catch(Exception e){
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar la sesion");
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        ClubDto clubSeguir = cb.obtenerClubPorId(idClub);
+        if (clubSeguir == null){
+            MensajeResponse mr = new MensajeResponse(false, "No se encontró el club a seguir");
+            return Response.ok(gson.toJson(mr)).build();
+        }
+        SesionDto sesion = sb.obtenerSesionPorToken(accessToken);
+        try{
+            ub.seguirClub(sesion.getUsuarioDto().getId(), clubSeguir); 
+            MensajeResponse mr = new MensajeResponse(true, "Se agregó correctamente");
+            return Response.ok(gson.toJson(mr)).build();
+        }catch(Exception e){
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrió un problema al agregar el club al usuario");
+            return Response.ok(gson.toJson(mr)).build();
+        }
+    }
 // </editor-fold>
     
 // <editor-fold defaultstate="collapsed" desc=" Partidos ">

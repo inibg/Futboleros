@@ -94,7 +94,7 @@ public class UsuarioBean {
     }
     
     public List<UsuarioDto> obtenerSeguidoresDeUnClub(Long idClub) throws Exception{
-        List<Usuario> usuarios = new ArrayList();
+        List<Usuario> usuarios;
         List<UsuarioDto> retorno = new ArrayList();
         try{
             ClubDto cd = cb.obtenerClubPorId(idClub);
@@ -107,5 +107,14 @@ public class UsuarioBean {
             throw e;
         }
         return retorno;
+    }
+    
+    public void seguirClub(Long usuarioId, ClubDto clubDto){
+        Usuario buscado = em.find(Usuario.class, usuarioId);
+        Club club = cb.toEntity(clubDto);
+        if (!buscado.getClubesSeguidos().contains(club)){
+            buscado.getClubesSeguidos().add(club);
+            em.persist(buscado);
+        }
     }
 }
