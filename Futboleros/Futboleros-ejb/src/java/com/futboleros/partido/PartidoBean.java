@@ -1,80 +1,60 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.futboleros.partido;
 
 import com.futboleros.club.ClubBean;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.LocalBean;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author inibg
- */
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @Stateless
 @LocalBean
 public class PartidoBean {
 
-    @PersistenceContext
-    private EntityManager em;
-    private static final Logger logger = LogManager.getLogger(PartidoBean.class);
+  @PersistenceContext
+  private EntityManager em;
+  private static final Logger logger = LogManager.getLogger(PartidoBean.class);
     
-    @EJB
-    private ClubBean clubBean;
+  @EJB
+  private ClubBean clubBean;
     
-    protected Partido toEntity(PartidoDto dto){
-        Partido ent = new Partido (dto.getId(), dto.getClubLocal(), dto.getClubVisitante(),
-                dto.getFechaPartido(), dto.getGolesLocal(), dto.getGolesVisitante());
-        return ent; 
+  protected Partido toEntity(PartidoDto dto) {
+    Partido ent = new Partido(dto.getId(), dto.getClubLocal(), dto.getClubVisitante(),
+            dto.getFechaPartido(), dto.getGolesLocal(), dto.getGolesVisitante());
+    return ent; 
+  }
+    
+  protected PartidoDto toDto(Partido ent) {
+    PartidoDto dto = new PartidoDto(ent.getId(), ent.getClubLocal(), ent.getClubVisitante(),
+            ent.getFechaPartido(), ent.getGolesLocal(), ent.getGolesVisitante());
+    return dto;
+  }
+    
+  public Long agregarPartido(PartidoDto dto) {
+    Partido nuevo = toEntity(dto);
+    em.persist(nuevo);
+    return nuevo.getId();
+  }
+    
+  public PartidoDto obtenerPartidoPorId(Long id) {
+    Partido buscado = em.find(Partido.class, id);
+    if (buscado == null) {
+      return null;
+    } else {
+      return toDto(buscado);
     }
-    
-    protected PartidoDto toDto(Partido ent){
-        PartidoDto dto = new PartidoDto(ent.getId(), ent.getClubLocal(), ent.getClubVisitante(),
-                ent.getFechaPartido(),
-        ent.getGolesLocal(), ent.getGolesVisitante());
-        return dto;
+  }
+
+  public Long actualizarResultado(PartidoDto actPardidoDto) {
+    logger.info("intentando actualizar el resultado del partido" + actPardidoDto.getId());
+    if (actPardidoDto.getId() != 0) {
+      Partido actPartido = this.toEntity(actPardidoDto);
+      em.merge(actPartido);
     }
-    
-    public Long agregarPartido(PartidoDto dto){
-        Partido nuevo = toEntity(dto);
-
-   
-            em.persist(nuevo);
-          return nuevo.getId();
-    }
-    
-
-    
-    public PartidoDto obtenerPartidoPorId(Long id){
-
-        Partido buscado = em.find(Partido.class, id);
-        if (buscado==null){
-            return null;
-        }else{
-            return toDto(buscado);
-        }
-
-
-        
-
-    }
-
-    public Long ActualizarResultado(PartidoDto ActPardidoDto){
-        //public Long ActualizarResultado(Long idPartido, Integer golesLocal,Integer golesVisitante){
-        logger.info("intentando actualizar el resultado del partido" + ActPardidoDto.getId());
-       
-       if (ActPardidoDto.getId()!=0){
-           Partido ActPartido = this.toEntity(ActPardidoDto);
-           em.merge(ActPartido);
-       }
-       
-        return ActPardidoDto.getId();
-    }
+    return actPardidoDto.getId();
+  }
 }
