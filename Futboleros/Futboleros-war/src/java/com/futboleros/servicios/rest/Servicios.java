@@ -71,8 +71,9 @@ public class Servicios {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerClubes(String requestJson){
         logger.info("Invocado el servicio /Clubes");
+        logger.info("con este json: " + requestJson);
         Gson gson = new Gson();
-        String accessToken = parse(requestJson, "accessToken");
+        String accessToken = parse(requestJson, "AccessToken");
         try{
             if (!validarToken(accessToken)){
                 MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
@@ -96,7 +97,7 @@ public class Servicios {
     public Response obtenerClub(@PathParam("id") Long id, String requestJson){
         logger.info("Invocado el servicio /Clubes/{id}");
         Gson gson = new Gson();
-        String accessToken = parse(requestJson, "accessToken");
+        String accessToken = parse(requestJson, "AccessToken");
         try{
             if (!validarToken(accessToken)){
                 MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
@@ -133,7 +134,7 @@ public class Servicios {
     public Response obtenerClub(@PathParam("nombre") String nombre, String requestJson){
         logger.info("Invocado el servicio /Clubes/Nombre/{nombre}");
         Gson gson = new Gson();
-        String accessToken = parse(requestJson, "accessToken");
+        String accessToken = parse(requestJson, "AccessToken");
         try{
             if (!validarToken(accessToken)){
                 MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
@@ -264,13 +265,25 @@ public class Servicios {
     //</editor-fold>
     
 // <editor-fold defaultstate="collapsed" desc=" Usuarios ">
-    @GET
+    @POST
     @Path("/Usuarios")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerUsuarios(){
+    public Response obtenerUsuarios(String requestJson){
         logger.info("Invocado el servicio /Usuarios");
-        List<UsuarioDto> usuarios  = ub.obtenerTodosLosUsuarios();
+        logger.info("con este json: " + requestJson);
         Gson gson = new Gson();
+        String accessToken = parse(requestJson, "AccessToken");
+        try{
+            if (!validarToken(accessToken)){
+                MensajeResponse mr = new MensajeResponse(false, "Sesion invalida");
+                return Response.ok(gson.toJson(mr)).build();
+            }
+        }catch(Exception e){
+            MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar la sesion");
+            return Response.ok(gson.toJson(mr)).build();
+        }   
+        List<UsuarioDto> usuarios  = ub.obtenerTodosLosUsuarios();
         String jsonRespuesta = gson.toJson(usuarios);
         logger.info("La respuesta generada fue: " + jsonRespuesta);
         return Response.ok(jsonRespuesta).build();
