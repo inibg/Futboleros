@@ -164,7 +164,7 @@ public class Servicios {
     }
     
     @POST
-    @Path("/Clubes/nuevo")
+    @Path("/Clubes/nuevoClub")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response nuevoClub(String nuevoClubJson){
@@ -632,7 +632,7 @@ public class Servicios {
     
 // <editor-fold defaultstate="collapsed" desc=" Partidos ">
     @POST
-    @Path("/Partido/nuevo")
+    @Path("/Partido/nuevoPartido")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response nuevoPartido(String nuevoPartidoJson){
@@ -662,7 +662,7 @@ public class Servicios {
             Long id=this.pb.agregarPartido(nuevoPartido);
             
             if(id!=0){        
-            logger.info("Se ha creado un partido con id club local : " + id );
+            logger.info("Se ha creado un partido con id : " + id );
             return Response.ok("{\"exito\":1, \"mensaje\":\"Se ha creado un partido con id: " + id + "\"}").build();
             }else{
                 return Response.ok("{\"exito\":1, \"mensaje\":\"NULO: \"}").build();
