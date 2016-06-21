@@ -1,5 +1,6 @@
-package com.futboleros.club;
+package com.futboleros.logica.club;
 
+import com.futboleros.persistencia.club.Club;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

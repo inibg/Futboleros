@@ -1,5 +1,7 @@
-package com.futboleros.usuario;
+package com.futboleros.logica.usuario;
 
+import com.futboleros.persistencia.usuario.Usuario;
+import com.futboleros.persistencia.usuario.Sesion;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

@@ -1,4 +1,4 @@
-package com.futboleros.partido;
+package com.futboleros.persistencia.partido;
 
 import java.io.Serializable;
 import java.util.Date;

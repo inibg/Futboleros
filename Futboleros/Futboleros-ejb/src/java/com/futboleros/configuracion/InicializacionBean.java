@@ -1,7 +1,7 @@
 package com.futboleros.configuracion;
 
-import com.futboleros.club.ClubBean;
-import com.futboleros.club.ClubDto;
+import com.futboleros.logica.club.ClubBean;
+import com.futboleros.logica.club.ClubDto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

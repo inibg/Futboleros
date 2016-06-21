@@ -1,11 +1,11 @@
 package com.futboleros.notificaciones;
 
-import com.futboleros.club.ClubBean;
-import com.futboleros.club.ClubDto;
-import com.futboleros.partido.PartidoBean;
-import com.futboleros.partido.PartidoDto;
-import com.futboleros.usuario.UsuarioBean;
-import com.futboleros.usuario.UsuarioDto;
+import com.futboleros.logica.club.ClubBean;
+import com.futboleros.logica.club.ClubDto;
+import com.futboleros.logica.partido.PartidoBean;
+import com.futboleros.logica.partido.PartidoDto;
+import com.futboleros.logica.usuario.UsuarioBean;
+import com.futboleros.logica.usuario.UsuarioDto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

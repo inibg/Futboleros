@@ -1,4 +1,4 @@
-package com.futboleros.usuario;
+package com.futboleros.logica.usuario;
 
 import java.util.Date;
 

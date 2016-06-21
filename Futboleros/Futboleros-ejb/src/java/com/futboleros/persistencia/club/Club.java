@@ -1,4 +1,4 @@
-package com.futboleros.club;
+package com.futboleros.persistencia.club;
 
 import java.io.Serializable;
 import javax.persistence.Column;

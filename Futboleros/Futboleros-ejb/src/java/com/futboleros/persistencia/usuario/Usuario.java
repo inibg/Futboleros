@@ -1,6 +1,7 @@
-package com.futboleros.usuario;
+package com.futboleros.persistencia.usuario;
 
-import com.futboleros.club.Club;
+import com.futboleros.persistencia.club.Club;
+import com.futboleros.logica.usuario.Rol;
 
 import org.hibernate.validator.constraints.Email;
 

@@ -1,6 +1,7 @@
-package com.futboleros.partido;
+package com.futboleros.logica.partido;
 
-import com.futboleros.club.ClubBean;
+import com.futboleros.persistencia.partido.Partido;
+import com.futboleros.logica.club.ClubBean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

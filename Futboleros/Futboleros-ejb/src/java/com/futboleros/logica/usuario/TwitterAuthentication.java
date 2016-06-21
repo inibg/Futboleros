@@ -1,4 +1,4 @@
-package com.futboleros.usuario;
+package com.futboleros.logica.usuario;
 
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.ServiceBuilder;

@@ -1,4 +1,4 @@
-package com.futboleros.club;
+package com.futboleros.logica.club;
 
 public class ClubDto {
     

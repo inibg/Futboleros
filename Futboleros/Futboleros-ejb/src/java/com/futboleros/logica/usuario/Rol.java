@@ -1,5 +1,5 @@
 
-package com.futboleros.usuario;
+package com.futboleros.logica.usuario;
 
 public enum Rol {
     ADMINISTRADOR,

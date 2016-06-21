@@ -1,6 +1,6 @@
-package com.futboleros.usuario;
+package com.futboleros.logica.usuario;
 
-import com.futboleros.club.ClubDto;
+import com.futboleros.logica.club.ClubDto;
 
 import java.util.List;
 

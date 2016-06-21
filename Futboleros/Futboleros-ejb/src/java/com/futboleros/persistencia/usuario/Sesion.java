@@ -1,4 +1,4 @@
-package com.futboleros.usuario;
+package com.futboleros.persistencia.usuario;
 
 import static javax.persistence.FetchType.EAGER;
 

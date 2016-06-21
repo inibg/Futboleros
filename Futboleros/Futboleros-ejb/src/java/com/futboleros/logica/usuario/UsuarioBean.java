@@ -1,8 +1,9 @@
-package com.futboleros.usuario;
+package com.futboleros.logica.usuario;
 
-import com.futboleros.club.Club;
-import com.futboleros.club.ClubBean;
-import com.futboleros.club.ClubDto;
+import com.futboleros.persistencia.usuario.Usuario;
+import com.futboleros.persistencia.club.Club;
+import com.futboleros.logica.club.ClubBean;
+import com.futboleros.logica.club.ClubDto;
 
 import java.util.ArrayList;
 import java.util.List;
