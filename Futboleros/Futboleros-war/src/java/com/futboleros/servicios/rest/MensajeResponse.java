@@ -3,7 +3,7 @@ package com.futboleros.servicios.rest;
 public class MensajeResponse {
 
   private Boolean exito;
-  private String Mensaje;
+  private String mensaje;
 
   public Boolean getExito() {
     return exito;
@@ -14,16 +14,17 @@ public class MensajeResponse {
   }
 
   public String getMensaje() {
-    return Mensaje;
+    return mensaje;
   }
 
-  private void setMensaje(String Mensaje) {
-    this.Mensaje = Mensaje;
+  private void setMensaje(String mensaje) {
+    this.mensaje = mensaje;
   }
 
-  public MensajeResponse(Boolean exito, String Mensaje) {
+  public MensajeResponse(Boolean exito, String mensaje) {
+
     setExito(exito);
-    setMensaje(Mensaje);
+    setMensaje(mensaje);
   }
     
   public MensajeResponse() {}

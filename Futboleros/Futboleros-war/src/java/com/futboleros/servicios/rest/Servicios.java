@@ -354,7 +354,7 @@ public class Servicios {
   @Path("/Usuarios/SolicitudTwitter")
   @Produces(MediaType.TEXT_PLAIN)
   public Response loginTwitter() {
-    logger.info("Invocado el servicio /Usuarios/CrearUsuario");
+    logger.info("Invocado el servicio /Usuarios/SolicitudTwitter");
     TwitterAuthentication ta = new TwitterAuthentication();
     List<String> autenticacion = null;
     try {
@@ -520,7 +520,7 @@ public class Servicios {
       if (ses != null) {
         sb.terminarSesion(ses.getToken());
       }
-    } catch (Exception e) {
+    } catch (Exception ex) {
       logger.info("Sesion no encontrada");
     }
     Date fechaInicio = new Date();
