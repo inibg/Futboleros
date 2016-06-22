@@ -1,4 +1,4 @@
-package com.futboleros.configuracion;
+package com.futboleros.logica.configuracion;
 
 import com.futboleros.logica.club.ClubBean;
 import com.futboleros.logica.club.ClubDto;

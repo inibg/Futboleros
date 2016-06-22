@@ -1,4 +1,4 @@
-package com.futboleros.notificaciones;
+package com.futboleros.logica.notificaciones;
 
 import com.futboleros.logica.club.ClubBean;
 import com.futboleros.logica.club.ClubDto;

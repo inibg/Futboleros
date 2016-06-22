@@ -667,7 +667,7 @@ public class Servicios {
       }
     } catch (Exception ex) {
       logger.error("Ocurrio un error al grabar el partido " 
-        + ex.getMessage());
+            + ex.getMessage());
       return Response.ok("{\"exito\":0, \"mensaje\":\"El partido no pudo ser agregado\"}").build();
     }
   }
@@ -675,10 +675,10 @@ public class Servicios {
   @POST
   @Path("/Partido/actualizarResultado")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response actualizarResultadoPartido(String JsonPartido) {     
+  public Response actualizarResultadoPartido(String jsonPartido) {     
     logger.info("Invocado el servicio /Partido/actualizarResultado");
-    logger.info("Con este Json: " + JsonPartido);
-    String token = parse(JsonPartido, "AccessToken");
+    logger.info("Con este Json: " + jsonPartido);
+    String token = parse(jsonPartido, "AccessToken");
     MensajeResponse validaAdmin = validarUsuarioAdmin(token);
     if (validaAdmin.getExito() == false) {
       Gson gson = new Gson();
@@ -687,7 +687,7 @@ public class Servicios {
     Gson gson = new Gson();
     PartidoDto actPartido;
     try {
-      actPartido = gson.fromJson(JsonPartido, PartidoDto.class);
+      actPartido = gson.fromJson(jsonPartido, PartidoDto.class);
     } catch (Exception ex) {
       logger.error("Ocurrio un error al convertir el Json en un PartidoDto " 
           + ex.getMessage());
@@ -722,8 +722,8 @@ public class Servicios {
     JsonParser  parser = new JsonParser();
     JsonObject rootObj = parser.parse(json).getAsJsonObject();
     JsonElement element  = rootObj.get(elemento);
-    if(element == null){
-        return "";
+    if (element == null) {
+      return "";
     } else {
       return element.getAsString();
     }
@@ -751,7 +751,8 @@ public class Servicios {
       UsuarioDto udto = sdto.getUsuarioDto();
       if (udto == null) {
         logger.error("Ocurrio un problema al obtener el usuario de la sesion");
-        MensajeResponse mr = new MensajeResponse(false, "Ocurrio un problema al validar su usuario");
+        MensajeResponse mr = new MensajeResponse(false, "Ocurrio "
+                + "un problema al validar su usuario");
         return mr;
       } else {
         if (udto.getRol() != Rol.ADMINISTRADOR) {
